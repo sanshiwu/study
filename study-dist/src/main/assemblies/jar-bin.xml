@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<assembly>
+  <componentDescriptors>
+    <componentDescriptor>${project.basedir}/src/main/assemblies/common-bin.xml</componentDescriptor>
+  </componentDescriptors>
+  <formats>
+    <format>jar</format>
+  </formats>
+
+  <id>jar</id>
+
+  <includeBaseDirectory>true</includeBaseDirectory>
+</assembly>

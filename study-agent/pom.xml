@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.study</groupId>
+    <artifactId>study</artifactId>
+    <version>2020</version>
+  </parent>
+  <artifactId>study-agent</artifactId>
+  <dependencies>
+    <dependency>
+      <artifactId>javassist</artifactId>
+      <groupId>org.javassist</groupId>
+      <version>3.22.0-GA</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Can-Retransform-Classes>true</Can-Retransform-Classes>
+              <Premain-Class>org.study.agent.StudyAgent</Premain-Class>
+            </manifestEntries>
+          </archive>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

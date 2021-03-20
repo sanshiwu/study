@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<assembly>
+  <baseDirectory>study-${project.version}</baseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <!-- 把依赖的所有jar,全部打入lib包中.-->
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+      <unpack>false</unpack>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+    <fileSet>
+      <!-- 手动复制classes文件夹.-->
+      <directory>../study-examples/study-web-examples/study-web-examples-servlet/target/classes</directory>
+      <includes>
+        <include>/**/*.class</include>
+      </includes>
+      <outputDirectory>WEB-INF/classes</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <!-- 手动复制WEB-IN文件夹.-->
+      <directory>../study-examples/study-web-examples/study-web-examples-servlet/target/classes/WEB-INF</directory>
+      <includes>
+        <include>/**/*</include>
+      </includes>
+      <outputDirectory>WEB-INF</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <fileMode>0644</fileMode>
+      <outputDirectory/>
+      <!-- 手动复制所有html文件.-->
+      <source>../study-examples/study-web-examples/study-web-examples-servlet/target/classes/index.html</source>
+    </file>
+  </files>
+  <formats>
+    <format>war</format>
+  </formats>
+  <id>war</id>
+  <!-- 按照war包规范,不应该有一级目录,解压后就是完整项目的列表.而不是一个目录.-->
+  <includeBaseDirectory>false</includeBaseDirectory>
+</assembly>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<assembly>
+  <baseDirectory>study-${project.version}</baseDirectory>
+  <componentDescriptors>
+    <componentDescriptor>${project.basedir}/src/main/assemblies/common-bin.xml</componentDescriptor>
+  </componentDescriptors>
+
+  <formats>
+    <format>dir</format>
+  </formats>
+  <id>dir</id>
+
+  <includeBaseDirectory>true</includeBaseDirectory>
+</assembly>

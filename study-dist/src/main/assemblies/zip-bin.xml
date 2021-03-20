@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<assembly>
+  <componentDescriptors>
+    <componentDescriptor>${project.basedir}/src/main/assemblies/common-bin.xml</componentDescriptor>
+  </componentDescriptors>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <!-- true,打包时,包中的一级目录(值是finalName).-->
+  <id>zip</id>
+  <!-- 引用共享的组件描述符.-->
+  <includeBaseDirectory>true</includeBaseDirectory>
+</assembly>

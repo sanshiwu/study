@@ -1,0 +1,159 @@
+<!-- 1.如何打包.-->
+<component>
+  <containerDescriptorHandlers>
+
+  </containerDescriptorHandlers>
+  <!-- moduleSets和dependencySets选择一个,或者配合使用. -->
+  <!-- 项目需要配置Dependencies.-->
+  <!-- 将Study-dist项目下的所有依赖jar全部打包进来,手动执行依赖. -->
+  <!-- 需要在pom.xml(study-dist)配置dependencies依赖,对于模块不生效.-->
+  <dependencySets>
+    <dependencySet>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0644</fileMode>
+      <!-- 拷贝所有依赖jar到插件输出目录outputDirectory/{finalName}/lib下-->
+      <outputDirectory>/lib</outputDirectory>
+      <outputFileNameMapping>${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+      <scope>runtime</scope>
+      <!-- 如果是true,会将jar包解压到/lib下.如果为false,直接复制,不会解压默认false.-->
+      <unpack>false</unpack>
+      <unpackOptions>
+        <encoding>UTF-8</encoding>
+      </unpackOptions>
+      <!-- 配合 unpack=true -->
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useStrictFiltering>false</useStrictFiltering>
+      <!-- 如果当前项目有java代码,打包后的jar,是否需要一起打包到/lib目录下. 默认true,需要.-->
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+    </dependencySet>
+  </dependencySets>
+  <!-- 需要拷贝特殊的项目下的文件夹到打包后的包中.-->
+  <fileSets>
+    <!-- .examples -->
+    <fileSet>
+      <!-- 从绝对目录或者相对目录下复制文件.-->
+      <directory>../study-examples/study-juli-examples/target</directory>
+      <!-- 拷贝所有需要的文件到输出目录outputDirectory/{finalName}/examples下-->
+      <directoryMode>0755</directoryMode>
+      <!-- 类似于UNIX权限.The default value is 0644.-->
+      <fileMode>0644</fileMode>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+      <!-- <lineEnding>unix</lineEnding> 应该只支持文本,不支持二进制.-->
+      <outputDirectory>examples/study-juli-examples</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../study-examples/study-juli-spi-examples/target
+      </directory>
+      <fileMode>0644</fileMode>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+      <outputDirectory>examples/study-juli-spi-examples</outputDirectory>
+    </fileSet>
+
+    <fileSet>
+      <directory>../study-examples/study-juli-spi-examples/src/main/resources</directory>
+      <fileMode>0644</fileMode>
+      <includes>
+        <include>*.policy</include>
+        <include>*.properties</include>
+      </includes>
+      <outputDirectory>conf</outputDirectory>
+    </fileSet>
+
+    <fileSet>
+      <directory>../study-examples/study-juli-examples/src/main/resources</directory>
+      <fileMode>0644</fileMode>
+      <includes>
+        <include>*.policy</include>
+        <include>*.properties</include>
+      </includes>
+      <outputDirectory>conf</outputDirectory>
+    </fileSet>
+
+    <fileSet>
+      <directory>../study-cli/target/classes</directory>
+      <fileMode>0644</fileMode>
+      <includes>
+        <include>*.sh</include>
+        <include>*.bat</include>
+      </includes>
+      <outputDirectory>bin</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <!-- 需要拷贝哪些文件到打包后的包中.-->
+  <!-- 聚合多文件内容到一个文件,自定义筛选内容.-->
+  <files>
+    <file>
+      <!--将三个文件合并,应该是只支持文本.-->
+      <destName>a.txt.bak</destName>
+      <!-- 给文件设置unix的权限.-->
+      <fileMode>0644</fileMode>
+      <lineEnding>unix</lineEnding>
+      <!-- 复制到相对目录下.-->
+      <outputDirectory>resources</outputDirectory>
+      <!-- 修改名字,将三个文件合并后的文件名字.-->
+      <sources>
+        <source>src/main/resources/1.txt</source>
+        <source>src/main/resources/2.txt</source>
+        <source>src/main/resources/3.txt</source>
+      </sources>
+    </file>
+    <!-- 只允许单个文件,并可以设置目标名称,fileset不支持这个操作-->
+    <file>
+      <!--从哪里复制,一般是当前的打包项目的资源目录.-->
+      <destName>a.txt</destName>
+      <!-- 给文件设置unix的权限. -->
+      <fileMode>0644</fileMode>
+      <lineEnding>unix</lineEnding>
+      <!-- 复制到相对目录下.-->
+      <outputDirectory>resources</outputDirectory>
+      <!-- 修改名字.-->
+      <source>src/main/resources/1.txt</source>
+    </file>
+  </files>
+  <!-- 将Study根项目下所有模块的依赖jar全部打包进来,比较无脑.-->
+  <moduleSets>
+    <moduleSet>
+      <!-- 包括所有模块.-->
+      <binaries>
+        <!-- 依赖打包到lib下-->
+        <outputDirectory>/lib</outputDirectory>
+        <!--不解压jar包-->
+        <unpack>false</unpack>
+      </binaries>
+      <!-- 包括所有子模块.-->
+      <includeSubModules>true</includeSubModules>
+      <!-- 包括哪些模块.-->
+      <includes>
+        <!-- 全部的项目模块*:* .groupId:artifactId or groupId:artifactId:type [:classifier]:version or Additionally, wildcards can be used, as in *:maven-*-->
+        <include>org.study:study-juli</include>
+      </includes>
+      <!-- 打包项目所有文件到包中,比如源码和文档,配置文件等.-->
+      <!--<sources>
+        <fileSets>
+          <fileSet>
+            <excludes>
+              <exclude>${project.build.directory}/**</exclude>
+            </excludes>
+            <outputDirectory>sources/${module.artifactId}</outputDirectory>
+          </fileSet>
+        </fileSets>
+        <includeModuleDirectory>false</includeModuleDirectory>
+      </sources>-->
+      <!-- 打包源代码到包中.-->
+      <useAllReactorProjects>true</useAllReactorProjects>
+    </moduleSet>
+  </moduleSets>
+  <!-- 完全拷贝maven元数据坐标,需要在pom.xml(study-dist)配置dependencies依赖.-->
+  <!--<repositories>
+    <repository>
+      <includeMetadata>true</includeMetadata>
+      <outputDirectory>/maven2</outputDirectory>
+    </repository>
+  </repositories>-->
+</component>

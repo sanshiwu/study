@@ -1,0 +1,22 @@
+// 安全管理器的意义是,让java代码只能在某个目录下有权限操作,目录之外的任何目录禁止操作,比如删除文件,写文件等.
+
+grant codeBase "file:${java.home}/lib/-" {
+        permission java.security.AllPermission;
+};
+
+grant codeBase "file:${java.home}/jre/lib/ext/-" {
+        permission java.security.AllPermission;
+};
+
+grant codeBase "file:${java.home}/../lib/-" {
+        permission java.security.AllPermission;
+};
+
+grant codeBase "file:${java.home}/lib/ext/-" {
+        permission java.security.AllPermission;
+};
+
+grant codeBase "file:${study.home}${/}-" {
+        permission java.security.AllPermission;
+};
+

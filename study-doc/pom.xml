@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.study</groupId>
+    <artifactId>study</artifactId>
+    <version>2020</version>
+  </parent>
+  <artifactId>study-doc</artifactId>
+  <version>2020</version>
+  <packaging>pom</packaging>
+  <properties>
+    <!-- basedir 就是当前项目的根目录, 当前配置代表study/study-doc. -->
+    <!-- adoc源码文件夹 -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- java源码文件夹 -->
+    <!--<study-doc.src>/study/study-examples</study-doc.src>-->
+    <!-- adoc输出文件夹,Java源码不编译,给adoc作为资源使用. -->
+    <study-doc.asciidoc>${project.basedir}/src/adoc</study-doc.asciidoc>
+    <!--  1:统一字符集编码UTF-8 -->
+    <study-doc.resources>${project.basedir}/src/resources</study-doc.resources>
+    <study-doc.target>${project.basedir}/target</study-doc.target>
+  </properties>
+  <build>
+    <defaultGoal>process-resources</defaultGoal>
+    <plugins>
+      <plugin>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <configuration>
+          <!-- 项目的根目录 -->
+          <attributes>
+            <adocSourceDir>${study-doc.asciidoc}</adocSourceDir>
+            <!-- java代码的源码目录. -->
+            <app-name>study-doc</app-name>
+            <!-- 自定义参数,可以在adoc源码中获取. -->
+            <!--<javaSourceDir>${study-doc.src}</javaSourceDir>-->
+            <author>Joe</author>
+            <authorinitials>JGH</authorinitials>
+            <copycss>false</copycss>
+            <!-- Section title and table of contents attributes-->
+            <!-- 给每一个header增加一个号码(1,2,3)-->
+            <copyright>本网站所有</copyright>
+            <!-- Document metadata attributes-->
+            <data-uri>true</data-uri>
+            <description>study官方文档</description>
+            <docinfo>shared</docinfo>
+            <docinfodir>${study-doc.resources}/docinfo</docinfodir>
+            <email>sanshiwu.com@gamil.com</email>
+            <endpoint-url>https://www.doc.study.org</endpoint-url>
+            <favicon>../resources/images/icons/favicon.ico</favicon>
+            <firstname>Joe</firstname>
+            <highlightjs-theme>highlight</highlightjs-theme>
+            <!-- 完整的属性: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-reference/#general-content-and-formatting-attributes-->
+            <!-- General content and formatting attributes-->
+            <!-- 内嵌图片到html页面.-->
+            <highlightjsdir>../resources/highlight</highlightjsdir>
+            <!-- docinfo 编译时加入自定义的html片段-->
+            <iconfont-name>font-awesome</iconfont-name>
+            <icons>font</icons>
+            <!-- 输出的文件后缀.-->
+            <imagesdir>${study-doc.resources}/images</imagesdir>
+            <!-- 2分割线:Source highlighting and formatting attributes-->
+            <!-- 代码高亮 -->
+            <keywords>study,juli,adoc</keywords>
+            <!-- highlight.js需要自己改菜能更好看.-->
+            <linkcss>false</linkcss>
+            <maven-version>${project.version}</maven-version>
+            <outfilesuffix>.html</outfilesuffix>
+            <project-version>${project.version}</project-version>
+            <sectnums>true</sectnums>
+            <!-- 1分割线:HTML styling attributes. -->
+            <source-highlighter>highlight.js</source-highlighter>
+            <!-- 1本地CSS的资源路径最后的/必须有,否则embedAssets=true无效-->
+            <source-indent>2</source-indent>
+            <!-- 1用自己的css代替内置的css.需要自己改菜能更好看. -->
+            <source-language>java</source-language>
+            <!-- 1css采用连接的形式拷贝css到每一个html目录下,配合preserveDirectories ,embedAssets=true无效-->
+            <source-linenums-option>true</source-linenums-option>
+            <!-- 1css采用连接的形式放入到html中(true),采用文本嵌入的方式(false)-->
+            <study>${basedir}</study>
+            <!-- 1 css-signature-->
+            <!-- 3分割线:Image and icon attributes-->
+            <stylesdir>${study-doc.resources}/stylesheets/</stylesdir>
+            <stylesheet>study.css</stylesheet>
+            <!-- 只能是相对路径,因为是连接的方式引用的.-->
+            <toc-class>toc2</toc-class>
+            <!-- 图片资源目录 (embedAssets=true,必须绝对路径)-->
+            <toclevels>3</toclevels>
+            <!-- 使用文字图标 两个路径无效.-->
+            <!--<icons>image</icons>
+            <icontype>png</icontype>-->
+            <!-- HTML内容中的图标-->
+            <!--<iconsdir>${study-doc.resources}/icons</iconsdir>-->
+          </attributes>
+          <!-- 此属性相当于maven-resources-plugin插件提供一样的功能-->
+          <backend>html5</backend>
+          <baseDir>../</baseDir>
+          <catalogAssets>true</catalogAssets>
+          <!-- 我们写的文档的目录,默认如下-->
+          <embedAssets>true</embedAssets>
+          <!-- 框架对文档解析html,存储到target目录下-->
+          <!-- false 不按照文档的目录生成对应的目录.-->
+          <enableVerbose>true</enableVerbose>
+          <!-- 这个目录主要是给include命令使用的,../代表定位到根目录下.当前意味着定位到study目录下. -->
+          <!-- 这样的话,在adoc文件中使用{docdir}可以引用任意子模块下的文件.参考: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-reference/#intrinsic-attributes-->
+          <logHandler>
+            <outputToConsole>true</outputToConsole>
+            <!--
+              <failIf>
+                <severity>ERROR</severity>
+              </failIf>
+            -->
+          </logHandler>
+          <!-- 编译后的html目录和原文档的目录一致-->
+          <!-- baseDir不设置的情况下,true相对于文档本身的路径下寻找include文件-->
+          <!--<relativeBaseDir>true</relativeBaseDir>-->
+          <!-- 自定义属性,框架自动替换-->
+          <outputDirectory>${study-doc.target}/generated-docs/adoc</outputDirectory>
+          <!-- ad, adoc, and asciidoc will be converted by default. -->
+          <preserveDirectories>false</preserveDirectories>
+          <resources>
+            <resource>
+              <directory>${study-doc.resources}</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <targetPath>${study-doc.target}/generated-docs/resources</targetPath>
+            </resource>
+          </resources>
+          <!-- 开启资源内嵌,包括css,图片,js(不包括非文本,不包括pdf等)-->
+          <sourceDirectory>${study-doc.asciidoc}</sourceDirectory>
+          <!-- 文档构建过程中,什么情况下代表失败,比如日志级别是ERROR就停止构建.-->
+          <sourceDocumentExtensions>adoc</sourceDocumentExtensions>
+          <sourcemap>true</sourcemap>
+          <!-- 以下的参数给goal=http使用的.-->
+          <!--资源的目录默认是文档的输出目录,重新指定HTTP的资源目录是无效的,需要再找找原因.-->
+          <!--这个参数是设置访问的主页.不包含后缀,比如主页是index.html,只填写index即可-->
+          <!--<home>test</home>-->
+          <!-- 默认http端口是2000.-->
+          <!--<port>16666</port>-->
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <!-- 只生成HTML,生成完毕结束.-->
+              <goal>process-asciidoc</goal>
+              <!-- 启动后,相当于启动了一个进程,不会退出.动态监听adoc文件CRUD,自动转换成HTML.-->
+              <!--<goal>auto-refresh</goal>-->
+              <!-- 继承 process-asciidoc auto-refresh 并发布到端口2000,提供web服务 http://localhost:2000/index-->
+              <!--<goal>http</goal>-->
+            </goals>
+            <id>asciidoc-to-html</id>
+            <!-- maven 的goal 执行的时候自己用的配置-->
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+        <!-- maven自己用的配置(executions共享)-->
+        <groupId>org.asciidoctor</groupId>
+        <version>2.1.0</version>
+      </plugin>
+      <plugin>
+        <!-- 排除父pom中的代码样式检查插件,有的插件不支持,需要查看插件skip参数 . -->
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.0</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>

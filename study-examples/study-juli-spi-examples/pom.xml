@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.study</groupId>
+    <artifactId>study-examples</artifactId>
+    <version>2020</version>
+  </parent>
+  <artifactId>study-juli-spi-examples</artifactId>
+  <dependencies>
+    <dependency>
+      <artifactId>study-juli</artifactId>
+      <groupId>org.study</groupId>
+      <version>2020</version>
+    </dependency>
+    <dependency>
+      <artifactId>disruptor</artifactId>
+      <groupId>com.lmax</groupId>
+      <version>3.4.2</version>
+    </dependency>
+    <dependency>
+      <artifactId>log4j-core</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <!--  2.9.1有不少问题,所以选择2.13.0-->
+      <!--  1:Required filename-based automodules detected-->
+      <!--  2:代码中偶尔读取不到自定义插件-->
+      <!--  3:日志格式输出的更好-->
+      <scope>compile</scope>
+      <version>2.13.3</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>juli-spi.policy</exclude>
+          <exclude>log4j2.properties</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+</project>

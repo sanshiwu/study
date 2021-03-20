@@ -1,0 +1,619 @@
+= Study juli log Guide
+:toc: left
+At the heart of Study Juli Log is a set of Java APIs that we call *java.util.logging*
+
+https://github.com/sanshiwu/study-juli[GitHub Repository].
+
+From now on,we'll just use the word *Juli* to refer to Study juli log.
+
+Juli provides functionality for things like:
+
+* The multiple thread asynchronous disk flush.
+
+* Logger dynamic programming.
+
+* The log rotation by log file name.
+
+* The multiple log files by class or package.
+
+* Custom log message format.
+
+* More refined processing log.
+For example, Handler condition,Custom filter.
+
+* Batch.
+
+* Compatible Native java.util.logging.
+
+* The facade of any log library,just write SPI service.
+. Juli supports various logging backends.Using SPI interface to support a variety of backend in the classpath.
+.. SLF4J
+.. Log4J
+.. Log4J2
+.. ...
+. The loading order of SPI implementation is: First priority,Ignore the SPI implementation after the first one.
+
+* Java Security Manager.
+
+* Java Agent.
+
+* Other features coming soon...
+
+Let's discuss the different concepts and features in Juli.
+
+== Preface
+
+This guide provides information about the Juli.
+
+=== Conventions
+
+The following text conventions are used in this document:
+
+* This document is written by asciidoc pure text syntax.
+. https://asciidoc.org/[asciidoc].
+
+* The asiidoctor Maven plugin compiles adoc into html.
+. https://asciidoctor.org/[asciidoctor].
+
+== Introduction
+
+An introduction to Juli.
+
+=== Overview
+
+Juli is very small and very lightweight.
+
+About 3000 lines of java source code and 3000 lines of comments.
+
+You just use the Jdk 11.
+
+You can use other dependencies you want.
+
+It's also entirely embeddable in your existing applications.
+
+We don't force you to use a juli log library in your applications.
+
+Juli can be used as the facade of any log library, just write SPI service.
+
+== Core concepts
+
+Not familiar with Juli?
+First read Introduction to Juli.
+
+=== Handler
+
+=== LogFactory
+
+=== Filter
+
+=== Formatter
+
+=== Logger
+
+=== LogManager
+
+=== Handler Queue
+
+=== Monitor
+
+=== StudyContext
+
+=== StudyThread
+
+=== StudyThreadFactory
+
+=== ConfigurationManagement
+
+=== Synchronous vs Asynchronous?
+
+Synchronous disk flush is not supported.
+It doesn't make sense.
+
+== Architecture
+
+== Lifecycle
+
+== Coding Guidelines
+
+In the following order of preference:
+
+. Sonar Checks
+
+. Ali Checks
+
+. Google Checks
+
+. Sun Checks
+
+. Idea Inspections
+
+A simple example:
+
+.gitignore
+
+.The clearest and simplest gitignore configuration file.
+Just a dozen lines, you can exclude all unnecessary files.
+
+[source,.gitignore]
+----
+include::{docdir}/.gitignore[]
+----
+
+Conversely, a bad example.
+Is it the result you want?
+I'm not sure.
+
+[source,.gitignore]
+----
+.DS_Store
+.gradle
+.idea
+.classpath
+.project
+.settings
+.yardoc
+.yardopts
+build
+target
+out
+*.iml
+*.ipr
+*.iws
+.vertx
+test-output
+src/scratchpad
+test-results
+test-tmp
+*.class
+*.swp
+.vertx
+...
+----
+
+pom.xml
+
+The clearest and simplest pom.xml configuration file.
+Every line is not redundant, but meaningful.
+
+[source,xml]
+----
+include::{docdir}/study-doc/pom.xml[]
+----
+
+The POM Code Convention is the Maven project's internal recommendation for POM element ordering.
+It calls for listing modifiers in the following order:
+
+[source,xml]
+----
+<modelVersion/>
+<parent/>
+<groupId/>
+<artifactId/>
+<version/>
+<packaging/>
+<name/>
+<description/>
+<url/>
+<inceptionYear/>
+<organization/>
+<licenses/>
+<developers/>
+<contributors/>
+<mailingLists/>
+<prerequisites/>
+<modules/>
+<scm/>
+<issueManagement/>
+<ciManagement/>
+<distributionManagement/>
+<properties/>
+<dependencyManagement/>
+<dependencies/>
+<repositories/>
+<pluginRepositories/>
+<build/>
+<reporting/>
+<profiles/>
+----
+
+Not following this Convention has no technical impact, but it reduces the readability of POM because most developers are used to the standard order.
+
+https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention
+
+== Juli Log Configuration file
+
+[source]
+.Logging.
+----
+include::{docdir}/study-examples/study-juli-examples/src/main/resources/logging.properties[]
+----
+
+[source]
+.SPI.
+----
+include::{docdir}/study-examples/study-juli-examples/src/main/resources/META-INF/services/org.study.juli.logging.base.Log[]
+----
+
+== Quick start
+
+This guide gets you started with Juli in Java with a simple working example.
+
+=== Prerequisites
+
+JDK version `11` or higher
+
+=== Get the example code
+
+The example code is repo.
+
+https://github.com/sanshiwu/study-examples[study-examples]
+
+Suppose our root directory is: `F:`
+
+. Download the repo as a zip file and unzip it, or clone the repo:
+
+.. git clone https://github.com/sanshiwu/study-examples
+
+. Change to the study-examples directory:
+.. cd F:/study-examples/study-juli-examples
+
+. mvn package
+
+.. git clone https://github.com/sanshiwu/study-juli
+
+. Change to the study-juli directory:
+
+.. cd F:/study-juli
+
+. mvn package
+
+=== Run the example
+
+==== The first way:
+
+. From the F:\study-examples\study-juli-examples directory:
+
+. 任何目录下执行:
+
+[source]
+----
+ java -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="F:\study-examples\study-juli-examples\src
+\main\resources\logging.properties" -classpath "F:\study-examples\study-juli-examples\target\classes;F:\study-juli\target\classes;" org.study.juli.examples.example.Examples
+----
+
+==== The second way
+
+将maven项目导入IDEA,直接运行org.study.juli.examples.example.Examples
+
+. 你可以看到日志已经输出到文件中.
+.. 1example1.log
+.. 1example2.log
+.. 1example3.log
+.. 1example4.log
+.. 1example5.log
+.. 1study.log
+.. 2study.log
+.. 3study.log
+.. 4study.log
+.. study_juli.log
+
+IMPORTANT: 需要了解运行命令,操作难度大而繁琐.最好使用IDEA运行.
+
+==== Some test cases
+
+* JULI
+
+[source]
+----
+使用JDK logging
+java -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
+----
+
+[source]
+----
+使用juli
+java -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
+----
+
+[source]
+----
+使用juli增加探针:
+java -D"info"="false" -D"generateClass"="false" -D"packageName"="org.study"  -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -javaagent:"./lib/study-agent-2020.jar" -classpath "./lib/*;./examples/study-juli-examples/*;G:\maven3.6.3\repository\org\javassist\javassist\3.22.0-GA\javassist-3.22.0-GA.jar;" org.study.juli.examples.example.Examples
+----
+
+[source]
+----
+打开安全管理器
+java -D"java.security.manager" -D"study.home"="." -D"java.security.policy"="./conf/juli.policy" -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
+java -D"java.security.manager" -D"study.home"="." -D"java.security.policy"="./conf/juli.policy" -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -classpath "./lib/study-juli-2020.jar;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
+----
+
+* LOG4J2
+
+[source]
+----
+使用JDK logging
+java -classpath "./lib/*;./examples/study-juli-spi-examples/*;" org.study.juli.spi.examples.example.Examples
+----
+
+[source]
+----
+使用log4j2
+java -D"log4j2.configurationFile"="./conf/log4j2.properties" -D"Log4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector" -classpath "./lib/*;./examples/study-juli-spi-examples/*;" org.study.juli.spi.examples.example.Examples
+----
+
+[source]
+----
+使用log4j2增加探针:
+java  -D"info"="false" -D"generateClass"="false" -D"packageName"="org.study"  -D"log4j2.configurationFile"="./conf/log4j2.properties" -D"Log4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"  -javaagent:"./lib/study-agent-2020.jar" -classpath "./lib/*;./examples/study-juli-spi-examples/*;G:\maven3.6.3\repository\org\javassist\javassist\3.22.0-GA\javassist-3.22.0-GA.jar;" org.study.juli.spi.examples.example.Examples
+----
+
+[source]
+----
+打开安全管理器
+java  -D"java.security.manager" -D"study.home"="." -D"java.security.policy"="./conf/juli-spi.policy"  -D"log4j2.configurationFile"="./conf/log4j2.properties" -D"Log4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector" -classpath "./lib/*;./examples/study-juli-spi-examples/*;" org.study.juli.spi.examples.example.Examples
+----
+
+* DEBUG
+
+[source]
+----
+-agentlib:jdwp=transport=dt_socket,address=127.0.0.1:2781,suspend=n,server=y
+transport=dt_socket 选择dt_socket协议.
+server=y y表示启动的JVM是服务器端.如果为n,则表示启动的JVM是客户端.
+suspend=n y表示启动的JVM会等待客户端连接.
+address=2781 指定给客户端使用的端口.
+----
+
+* 没有修复的Sonar提示.
+
+[source]
+----
+java:S2148
+java:S1451
+java:S1148
+java:S1774
+java:S1312
+java:S4174
+java:S112
+java:S923
+java:S134
+java:S1108
+java:S1106
+java:S2658
+java:S1309
+java:S1450
+java:S1699
+java:S2093
+java:S3776
+java:S1148
+----
+
+* jconsole和jmc连接到jvm时需要下面的系统参数设置,否则无法连接.
+
+[source]
+----
+#-Dcom.sun.management.jmxremote
+#-D"com.sun.management.jmxremote.port"="8011"
+#-D"com.sun.management.jmxremote.ssl"="false"
+#-D"com.sun.management.jmxremote.authenticate"="false"
+----
+
+== How to develop a SPI implementation?
+
+. Create a maven project.
+
+. Create the `META-INF` directory in the `resources` directory of classpath, and then create the `services` directory in the  `META-INF` directory .
+
+. Create SPI configuration file in `services` Directory.
+File name is `org.study.juli.logging.base.Log`
+
+. Fill in the full path of SPI interface custom implementation class.
+Take log4j2 as an example: value is `org.study.juli.examples.Log4j2`
+
+[source,properties]
+----
+include::{docdir}/study-examples/study-juli-spi-examples/src/main/resources/META-INF/services/org.study.juli.logging.base.Log[]
+----
+
+Take log4j2 as an example:
+Create the log configuration file of SPI interface custom implementation class in the 1921``resources` directory of classpath.
+
+log4j2.properties
+
+[source,properties]
+----
+include::{docdir}/study-examples/study-juli-spi-examples/src/main/resources/log4j2.properties[]
+----
+
+log4j2 dependency lib
+
+[source,xml]
+----
+  <dependencies>
+    <dependency>
+      <artifactId>study-juli</artifactId>
+      <groupId>org.study</groupId>
+      <version>2020</version>
+    </dependency>
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <version>3.4.2</version>
+    </dependency>
+    <dependency>
+      <artifactId>log4j-core</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <scope>compile</scope>
+      <version>2.13.3</version>
+    </dependency>
+  </dependencies>
+----
+
+If you want to use asynchronous processors, don't forget system properties:
+
+-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+
+== Juli Core Code
+
+[source,java]
+.Log.
+----
+include::{docdir}/study-juli/src/main/java/org/study/juli/logging/base/Log.java[]
+----
+
+== Appendix: Dependencies Versions
+
+.Versions of all third-party libraries.
+[source,properties]
+----
+include::{docdir}/study-juli/src/main/resources/version.properties[]
+----
+
+== Benchmark test
+
+This page describes performance benchmarking tools, scenarios considered by tests, and the testing infrastructure.
+
+=== Performance
+
+There are several important scenarios under test, including the following:
+
+==== Scenarios1
+
+Single hard disk single log file.
+
+==== Scenarios2
+
+Single hard disk with multiple log files.
+
+==== Scenarios3
+
+Multiple hard disks and multiple log files.
+
+=== Infrastructure
+
+All test instances are 4-core, 4-thread, 2gb memory and 256gb Samsung SSD hard systems.
+
+In the case of large amount of data: Resource consumption is twice as much as log4j2, or even more.
+
+Memory peak: 400MB, Avg 200MB
+
+CPU peak: 50%, Avg 30%
+
+NOTE: In the example, using the `for` loop take a lot of CPU,This part is ignored.
+Otherwise, the CPU peak may be 80% or more.
+
+IO writes peak: 90MB per second, Avg 85MB.
+
+Write speed peak: infinite.
+
+In the case of small amount of data: Resource consumption is the same as log4j2.
+
+Memory peak: 100MB
+
+CPU peak: 20%
+
+IO writes peak:
+
+Write speed peak:
+
+About 5GB of data can be written to log file in one minute, either single log file or multiple log files.
+
+NOTE: If you use multiple hard disks, writing will be faster.
+
+== FAQ
+
+Here are some frequently asked questions.
+Hope you find your answer here :-)
+
+=== Motivation
+
+Need a simple, lightweight log library.
+Does not rely on any third party library.
+
+=== Design Principles
+
+* The API can be extended.
+
+* The configuration file is simple and clear enough.
+
+* Provide web operation, dynamic configuration.
+
+* Be used as any third-party log library facade.
+
+* The most important thing is easy to learn, easy for anyone to contribute.
+
+* So Juli was born.
+
+=== Who’s using this and why?
+
+Any beginner who wants to know how the logging framework works
+
+=== Which license is Juli under?
+
+All implementations are licensed under https://creativecommons.org/licenses/by/4.0/[CC BY 4.0].
+
+=== How can I contribute?
+
+Contributors are highly welcome.
+The repositories are hosted on GitHub.
+
+=== What is the road map?
+
+Later continue to optimize:
+
+* Graceful shutdown.
+
+* Web Collocation Management.
+
+* Log datetime support any time zone conversion.
+Currently, only UTC is supported.
+
+=== What is the Juli versioning policy?
+
+Version policy uses JEP322
+
+=== How long are Juli releases supported for?
+
+According to JEP322.
+
+=== Can I use Juli with my favorite data format (JSON, XML)?
+
+No,But it's not far away(The JSON format of log4j2 is provided by default).
+
+=== Can I use Juli on our company's projects?
+
+NOTE: This is a library that has not been verified by most of production environment.
+
+NOTE: This is only the library that I developed in my former company, and it has only been verified in our production environment.
+So it is not recommended for your production environment.
+
+IMPORTANT: It is not recommended to use in commercial environment, and there is no guarantee.
+
+=== How do you pronounce Juli?
+
+You can call it `Julie` or `朱莉`.
+You can also call it `cohesion` or `聚力`.
+Because there is no release, the name is just a name, and it doesn't make sense.
+
+==== Why is it called `Study` `Juli`?
+
+* learn和study的区别是什么
+
+. learn可以用作动词,可以翻译为学习,学会等等.
+learn侧重指通过经验,练习或经别人指教而获得知识或技能,强调结果.
+学习技能,向某人学习只能用learn.
+learn指"学习,学会",侧重学习的成果,指从不知到知,从不会到会的学习,强调通过学习去获得知识和技能,它没有凭勤奋努力而获得知识的意味.
+learn亦可指向某人学习,从某处学习及学习一门技能等.
+如:learn music, learn new words, learn to skate, learn from experience, learn from LeiFeng.
+
+. study可以用作名词和动词,可以翻译为学习,研究等等.
+study指专心钻研而获得知识,有探讨和研究的意思,强调学习的过程.
+在…学习只能用study.
+study指"学习,研究",强调学习的过程,指深入系统地学习,带有努力,勤奋的意味.
+其学习对象往往是科学,艺术和需要深入探讨,研究的问题及学科,而不是单纯地获得技巧.
+如:study medicine, study science, study a map, study engineering, study painting.
+
+NOTE: 在指某学科的"学习"时,或在不需要强调两者的区别时,learn和study可以换用.
+
+So we use study instead of learn.
