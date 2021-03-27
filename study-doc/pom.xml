@@ -48,7 +48,7 @@
             <description>study官方文档</description>
             <docinfo>shared</docinfo>
             <docinfodir>${study-doc.resources}/docinfo</docinfodir>
-            <email>sanshiwu.com@gamil.com</email>
+            <email>www.sanshiwu.com@gamil.com</email>
             <endpoint-url>https://www.doc.study.org</endpoint-url>
             <favicon>../resources/images/icons/favicon.ico</favicon>
             <firstname>Joe</firstname>

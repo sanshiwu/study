@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.base.Log;
 import org.study.juli.logging.formatter.StudyJuliMessageHandler;
+import org.study.juli.logging.thread.StudyThread;
 
 /**
  * Juli日志的核心API,提供所有日志级别的方法,由LogFactory动态创建.
@@ -15,15 +16,10 @@ import org.study.juli.logging.formatter.StudyJuliMessageHandler;
  *
  * @author admin
  */
-@SuppressWarnings({"java:S1450"})
 public class Logging implements Log {
   /** 一个Logger对象对应一个Logging对象. */
   private final Logger logger;
-  /** 方法堆栈异常. */
-  private Throwable stackTrace;
-  /** 方法调用栈(java:S1450). */
-  private StackTraceElement[] stackTraceElements;
-  /** 方法的当前堆栈元素,采用全局变量的原因是同一个对象,都是相同的,不用每次方法都调用一次(否则性能下降很多). */
+  /** 方法的当前堆栈元素,采用全局变量的原因是同一个对象,方法调用栈都是相同的,不用每次方法都调用一次(否则性能下降很多). */
   private StackTraceElement stackTraceElement;
 
   /**
@@ -60,20 +56,29 @@ public class Logging implements Log {
    */
   private void log(final Level level, final String message, final Throwable throwable) {
     // 一个Logging实例初始化一次. 因为调用栈都是一样的,直接获取某个元素即可.
-    if (stackTrace == null) {
+    if (stackTraceElement == null) {
       // 当前方法的异常.
-      stackTrace = new Throwable();
+      Throwable stackTrace = new Throwable();
       // 当前方法的调用栈.
-      stackTraceElements = this.stackTrace.getStackTrace();
+      StackTraceElement[] stackTraceElements = stackTrace.getStackTrace();
       // 当前方法的调用栈深度是4. 因此获取第三个元素即可拿到调用者类.
-      stackTraceElement = this.stackTraceElements[Constants.STACK_TRACE_ELEMENT];
+      stackTraceElement = stackTraceElements[Constants.STACK_TRACE_ELEMENT];
     }
     // 获取当前方法调用者的类全路径.
     String className = logger.getName();
     // 获取当前方法调用者的类方法.
     String classMethod = stackTraceElement.getMethodName();
+    // 获取当前线程.
+    Thread thread = Thread.currentThread();
+    String unique = null;
+    // 如果不是StudyThread,无法处理唯一日志消息ID.
+    if (thread instanceof StudyThread) {
+      StudyThread studyThread = (StudyThread) thread;
+      // 获取线程当前的唯一消息ID.
+      unique = studyThread.getUnique();
+    }
     // 调用JDK日志打印方法,循环查找当前logger注册的handler.循环调用handler的publish方法.
-    logger.logp(level, className, classMethod, message, throwable);
+    logger.logp(level, className, classMethod, unique + " " + message, throwable);
   }
 
   /**

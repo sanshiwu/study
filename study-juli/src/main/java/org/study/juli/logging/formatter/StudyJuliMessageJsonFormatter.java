@@ -4,7 +4,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
@@ -18,10 +17,11 @@ import org.study.juli.logging.base.Constants;
  *
  * @author admin
  */
-public class StudyJuliMessageJsonFormatter extends Formatter {
+public class StudyJuliMessageJsonFormatter extends AbstractMessageFormatter {
 
   /** . */
-  private static final Logger LOGGER = Logger.getLogger(StudyJuliMessageJsonFormatter.class.getName());
+  private static final Logger LOGGER =
+      Logger.getLogger(StudyJuliMessageJsonFormatter.class.getName());
   /** . */
   private final DateTimeFormatter pattern;
 
@@ -79,6 +79,8 @@ public class StudyJuliMessageJsonFormatter extends Formatter {
    */
   @Override
   public String format(final LogRecord record) {
+    // 首先兼容JDK原生的日志格式,然后进行格式化处理.
+    String message = defaultFormat(record);
     // UTC时区获取当前系统的日期.
     final ZonedDateTime zdt = ZonedDateTime.ofInstant(record.getInstant(), ZoneOffset.UTC);
     // 日期格式化.
@@ -101,7 +103,7 @@ public class StudyJuliMessageJsonFormatter extends Formatter {
     sb.append(this.inQuotes(record.getSourceMethodName()));
     sb.append(",");
     sb.append(this.inQuotes("message") + ": ");
-    sb.append(this.inQuotes(record.getMessage()));
+    sb.append(this.inQuotes(message));
     // 如果有异常堆栈信息,则打印出来.
     Throwable thrown = record.getThrown();
     if (thrown != null) {

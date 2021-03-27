@@ -4,7 +4,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
@@ -18,7 +17,7 @@ import org.study.juli.logging.base.Constants;
  *
  * @author admin
  */
-public class StudyJuliMessageFormatter extends Formatter {
+public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
 
   /** . */
   private static final Logger LOGGER = Logger.getLogger(StudyJuliMessageFormatter.class.getName());
@@ -79,6 +78,8 @@ public class StudyJuliMessageFormatter extends Formatter {
    */
   @Override
   public String format(final LogRecord record) {
+    // 首先兼容JDK原生的日志格式,然后进行格式化处理.
+    String message = defaultFormat(record);
     // UTC时区获取当前系统的日期.
     final ZonedDateTime zdt = ZonedDateTime.ofInstant(record.getInstant(), ZoneOffset.UTC);
     // 日期格式化.
@@ -103,7 +104,7 @@ public class StudyJuliMessageFormatter extends Formatter {
     sb.append(record.getSourceMethodName());
     sb.append(' ');
     // 已经格式化后的日志消息.
-    sb.append(record.getMessage());
+    sb.append(message);
     // 如果有异常堆栈信息,则打印出来.
     Throwable thrown = record.getThrown();
     if (thrown != null) {

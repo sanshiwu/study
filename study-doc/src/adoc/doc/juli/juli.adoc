@@ -2,7 +2,7 @@
 :toc: left
 At the heart of Study Juli Log is a set of Java APIs that we call *java.util.logging*
 
-https://github.com/sanshiwu/study-juli[GitHub Repository].
+https://github.com/sanshiwu/study[GitHub Repository].
 
 From now on,we'll just use the word *Juli* to refer to Study juli log.
 
@@ -18,8 +18,9 @@ Juli provides functionality for things like:
 
 * Custom log message format.
 
-* More refined processing log.
-For example, Handler condition,Custom filter.
+* Thread pool queue rejection policies back pressure mechanism.
+
+* More refined processing log. For example, Handler condition,Custom filter.
 
 * Batch.
 
@@ -38,6 +39,14 @@ For example, Handler condition,Custom filter.
 * Java Agent.
 
 * Other features coming soon...
+
+. Unique message id in same thread.
+
+. Back pressure control based on high and low water mark.
+
+. Back pressure control based on read and write stream.
+
+. ...
 
 Let's discuss the different concepts and features in Juli.
 
@@ -246,20 +255,20 @@ JDK version `11` or higher
 
 The example code is repo.
 
-https://github.com/sanshiwu/study-examples[study-examples]
+https://github.com/sanshiwu/study[study-examples]
 
 Suppose our root directory is: `F:`
 
 . Download the repo as a zip file and unzip it, or clone the repo:
 
-.. git clone https://github.com/sanshiwu/study-examples
+.. git clone https://github.com/sanshiwu/study.git
 
 . Change to the study-examples directory:
 .. cd F:/study-examples/study-juli-examples
 
 . mvn package
 
-.. git clone https://github.com/sanshiwu/study-juli
+.. git clone https://github.com/sanshiwu/study.git
 
 . Change to the study-juli directory:
 
@@ -268,6 +277,12 @@ Suppose our root directory is: `F:`
 . mvn package
 
 === Run the example
+
+需要设置系统参数:
+
+-Djava.util.logging.manager
+
+-Djava.util.logging.config.file
 
 ==== The first way:
 
@@ -492,9 +507,11 @@ Multiple hard disks and multiple log files.
 
 === Infrastructure
 
-All test instances are 4-core, 4-thread, 2gb memory and 256gb Samsung SSD hard systems.
+All test instances are Windows 10(64) Intel i5-4590 CPU @ 3.30Ghz, 1 physical core 4-Vcore, 4-thread, 2gb memory and 256gb Samsung SSD hard systems.
 
 In the case of large amount of data: Resource consumption is twice as much as log4j2, or even more.
+
+Max heap memory(Submitted): 800MB,then it stabilized.
 
 Memory peak: 400MB, Avg 200MB
 
@@ -503,7 +520,7 @@ CPU peak: 50%, Avg 30%
 NOTE: In the example, using the `for` loop take a lot of CPU,This part is ignored.
 Otherwise, the CPU peak may be 80% or more.
 
-IO writes peak: 90MB per second, Avg 85MB.
+IO writes peak: 90MB per second, Avg 85MB, Max 100MB, this depends on disk IO performance.
 
 Write speed peak: infinite.
 
@@ -525,6 +542,22 @@ NOTE: If you use multiple hard disks, writing will be faster.
 
 Here are some frequently asked questions.
 Hope you find your answer here :-)
+
+=== Flow control and backpressure.
+
+Q:So far, what's Juli's back pressure mechanism?
+
+A:Thread pool queue rejection policies.
+
+`ThreadPoolExecutor.CallerRunsPolicy()`
+
+This is not an elegant solution. But it's very useful.
+
+The only drawback is: The downstream threads block upstream threads and use them to execute tasks(Block upstream Thread).This will cause the upstream thread life cycle to end ahead of time, and the internal data of the thread will change, such as the internal variables of the thread.
+
+It can solve the thread pool task back pressure.
+
+In the future,We will consider the scheme of back pressure mechanism based on the number of entries and the size of bytes in the time window.
 
 === Motivation
 
@@ -577,9 +610,9 @@ Version policy uses JEP322
 
 According to JEP322.
 
-=== Can I use Juli with my favorite data format (JSON, XML)?
+=== Can I use Juli with my favorite data format (JSON)?
 
-No,But it's not far away(The JSON format of log4j2 is provided by default).
+The JSON format is provided by default. Other formats are not supported.
 
 === Can I use Juli on our company's projects?
 

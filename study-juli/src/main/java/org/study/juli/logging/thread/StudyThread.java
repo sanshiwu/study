@@ -1,5 +1,6 @@
 package org.study.juli.logging.thread;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.study.juli.logging.context.StudyContext;
 
@@ -12,36 +13,28 @@ import org.study.juli.logging.context.StudyContext;
  */
 public final class StudyThread extends Thread {
 
-  /**
-   * 线程类型.
-   */
+  /** 线程类型. */
   private final int threadType;
-  /**
-   * 线程最大的执行时间.
-   */
+  /** 线程最大的执行时间. */
   private final long maxExecTime;
-  /**
-   * 线程最大的执行单位.
-   */
+  /** 线程最大的执行单位. */
   private final TimeUnit maxExecTimeUnit;
-  /**
-   * 线程开始运行的时间(毫秒).
-   */
+  /** 线程开始运行的时间(毫秒). */
   private long execStart;
-  /**
-   * 线程运行的上下文环境.
-   */
+  /** 线程运行的上下文环境. */
   private StudyContext context;
+  /** 线程从开始到结束之间唯一的UUID. */
+  private String unique;
 
   /**
    * 自定义线程.
    *
    * <p>参数需要加final修饰.
    *
-   * @param targetParam          线程任务.
-   * @param nameParam            线程名.
-   * @param threadTypeParam      线程类型.
-   * @param maxExecTimeParam     线程最大执行时间.
+   * @param targetParam 线程任务.
+   * @param nameParam 线程名.
+   * @param threadTypeParam 线程类型.
+   * @param maxExecTimeParam 线程最大执行时间.
    * @param maxExecTimeUnitParam 线程最大执行时间单位.
    * @author admin
    */
@@ -107,6 +100,10 @@ public final class StudyThread extends Thread {
     return context;
   }
 
+  public String getUnique() {
+    return unique;
+  }
+
   /**
    * 当线程开始时,开始时间设置成当前系统的时间戳毫秒数.
    *
@@ -117,6 +114,8 @@ public final class StudyThread extends Thread {
     if (context == null) {
       // 设置当前系统时间为开始时间,代表线程开始执行.
       execStart = System.currentTimeMillis();
+      // 设置线程开始运行时的唯一ID
+      unique = UUID.randomUUID().toString();
     }
   }
 
@@ -125,6 +124,8 @@ public final class StudyThread extends Thread {
     if (context == null) {
       // 设置当前系统时间为0,代表线程执行完毕.
       execStart = 0;
+      // 设置线程结束运行时的唯一ID
+      unique = null;
     }
   }
 

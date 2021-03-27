@@ -1,12 +1,10 @@
 package org.study.juli.logging.handler;
 
-import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -30,8 +28,8 @@ import org.study.juli.logging.worker.ProducerNoticeConsumerWorker;
  *
  * @author admin
  */
-@SuppressWarnings({"java:S2658", "java:S2093"})
-public class FileHandler extends AbstractHandler {
+@SuppressWarnings({"java:S2658"})
+public class FileHandlerV2 extends AbstractHandler {
   /** 生产通知消费处理器.为Handler自己的队列创建一个生产者通知消费者处理程序. */
   private final StudyHandler<Handler> producerNoticeConsumerWorker =
       new ProducerNoticeConsumerWorker();
@@ -48,13 +46,7 @@ public class FileHandler extends AbstractHandler {
   /** . */
   private Formatter formatter;
   /** . */
-  private PrintWriter writer;
-  /** . */
-  private FileOutputStream fileStream;
-  /** . */
-  private BufferedOutputStream bufferedStream;
-  /** . */
-  private OutputStreamWriter streamWriter;
+  private BufferedWriter bufferedWriter;
   /** . */
   private File logFilePath;
   /** 生产日志处理器. */
@@ -67,7 +59,7 @@ public class FileHandler extends AbstractHandler {
    *
    * @author admin
    */
-  public FileHandler() {
+  public FileHandlerV2() {
     try {
       // 读取日志配置文件,初始化配置.
       config();
@@ -259,7 +251,6 @@ public class FileHandler extends AbstractHandler {
   public ConsumerRunnable createConsumerRunnable() {
     return new ConsumerRunnable();
   }
-
   /**
    * 消费者线程任务.
    *
@@ -288,50 +279,56 @@ public class FileHandler extends AbstractHandler {
     }
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   public void process(final int size) {
     try {
       boolean flag = false;
       // 获取一批数据,写入磁盘.
       for (int i = 0; i < size; i++) {
-        // 非阻塞方法获取队列元素.
+        // 10, TimeUnit.MILLISECONDS,不等待.
         LogRecord logRecord = fileQueue.poll();
         // 如果数量不够,导致从队列获取空对象.
         if (logRecord != null) {
-          // 设置不为空的标志.
           flag = true;
-          // 需要加写锁,可能会关闭.
-          if (writer != null) {
-            // 写入缓存(如果在publish方法中先格式化,则性能下降30%,消费端瓶颈取决于磁盘IO,生产端速度达不到最大,并发不够).
-            writer.write(formatter.format(logRecord));
-          }
+          bufferedWriter.write(formatter.format(logRecord));
         } else {
           break;
         }
       }
-      // 如果缓存中由数据,刷新一次.
-      if (flag && writer != null) {
+      if (flag) {
         // 刷新一次IO磁盘.
-        writer.flush();
+        bufferedWriter.flush();
       }
     } catch (Exception e) {
-      // ignore Exception.
+      //
       throw new StudyJuliRuntimeException(e);
     }
   }
 
+  /**
+   * 创建kafka客户端.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   private void open() {
     writeLock.lock();
     try {
-      // java:S2093 这个严重问题,暂时无法解决,先忽略sonar的警告.因为文件不能关闭,需要长时间打开.但是sonar检测,需要关闭IO资源.
-      fileStream = new FileOutputStream(logFilePath, true);
-      // 创建一个buffered流,缓存大小默认8192.
-      bufferedStream = new BufferedOutputStream(fileStream, Constants.BATCH_BUF_SIZE);
-      // 创建一个输出流,使用UTF-8 编码.
-      streamWriter = new OutputStreamWriter(bufferedStream, StandardCharsets.UTF_8);
-      // 创建一个PrintWriter,启动自动刷新.
-      writer = new PrintWriter(streamWriter, true);
-      // 尝试写入一个空"".
-      writer.write("");
+      bufferedWriter =
+          Files.newBufferedWriter(
+              logFilePath.toPath(),
+              StandardCharsets.UTF_8,
+              StandardOpenOption.CREATE,
+              StandardOpenOption.WRITE,
+              StandardOpenOption.APPEND);
+      bufferedWriter.write("");
     } catch (Exception e) {
       // 如何任何阶段发生了异常,主动关闭所有IO资源.
       closeIo();
@@ -341,43 +338,26 @@ public class FileHandler extends AbstractHandler {
     }
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   public void closeIo() {
     writeLock.lock();
     try {
-      // 尝试关闭文件流.
-      if (fileStream != null) {
-        try {
-          fileStream.flush();
-          fileStream.close();
-        } catch (IOException e) {
-          throw new StudyJuliRuntimeException(e);
-        }
+      // 尝试关闭buffered writer流.
+      if (bufferedWriter != null) {
+        bufferedWriter.write("");
+        bufferedWriter.flush();
+        bufferedWriter.close();
+        bufferedWriter = null;
       }
-      // 尝试关闭buff文件流.
-      if (bufferedStream != null) {
-        try {
-          bufferedStream.flush();
-          bufferedStream.close();
-        } catch (IOException e) {
-          throw new StudyJuliRuntimeException(e);
-        }
-      }
-      // 尝试关闭stream writer流.
-      if (streamWriter != null) {
-        try {
-          streamWriter.flush();
-          streamWriter.close();
-        } catch (IOException e) {
-          throw new StudyJuliRuntimeException(e);
-        }
-      }
-      // 尝试关闭print writer流.
-      if (writer != null) {
-        writer.write("");
-        writer.flush();
-        writer.close();
-        writer = null;
-      }
+    } catch (Exception e) {
+      //
+      throw new StudyJuliRuntimeException(e);
     } finally {
       writeLock.unlock();
     }
