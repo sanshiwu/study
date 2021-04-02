@@ -4,11 +4,9 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import org.study.juli.logging.base.Constants;
+import org.study.juli.logging.core.LogRecord;
+import org.study.juli.logging.manager.AbstractLogManager;
 
 /**
  * 日志文本行格式化,扩展JDK提供的简单格式化.
@@ -18,9 +16,6 @@ import org.study.juli.logging.base.Constants;
  * @author admin
  */
 public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
-
-  /** . */
-  private static final Logger LOGGER = Logger.getLogger(StudyJuliMessageFormatter.class.getName());
   /** . */
   private final DateTimeFormatter pattern;
 
@@ -34,7 +29,7 @@ public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
   public StudyJuliMessageFormatter() {
     // 获取当前处理器配置的格式化.
     String timeFormat =
-        LogManager.getLogManager()
+        AbstractLogManager.getLogManager()
             .getProperty(
                 StudyJuliMessageFormatter.class.getName() + Constants.DATETIME_FORMAT_NAME);
     // 如果为空.
@@ -44,8 +39,6 @@ public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
     }
     // 创建一个日期时间格式化实例.
     pattern = DateTimeFormatter.ofPattern(timeFormat);
-    // 打印当前日期时间格式化.
-    LOGGER.log(Level.INFO, "当前使用的日期时间格式化{0}", timeFormat);
   }
 
   /**
@@ -102,6 +95,9 @@ public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
     sb.append('.');
     // 日志由哪个方法打印的.
     sb.append(record.getSourceMethodName());
+    sb.append(' ');
+    // 日志unique id.
+    sb.append(record.getUniqueId());
     sb.append(' ');
     // 已经格式化后的日志消息.
     sb.append(message);

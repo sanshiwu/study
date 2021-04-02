@@ -3,8 +3,6 @@ package org.study.juli.logging.thread;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.monitor.Monitor;
 import org.study.juli.logging.monitor.ThreadMonitor;
@@ -17,34 +15,17 @@ import org.study.juli.logging.monitor.ThreadMonitor;
  * @author admin
  */
 public class StudyThreadFactory implements ThreadFactory {
-
-  /**
-   * .
-   */
-  private static final Logger LOGGER = Logger.getLogger(StudyThreadFactory.class.getName());
-  /**
-   * 线程名前缀.
-   */
+  /** 线程名前缀. */
   private final String prefix;
-  /**
-   * 线程名后缀计数.
-   */
+  /** 线程名后缀计数. */
   private final AtomicInteger threadCount = new AtomicInteger(0);
-  /**
-   * 线程监听检查对象.
-   */
+  /** 线程监听检查对象. */
   private final Monitor checker;
-  /**
-   * 线程的类型0和1.
-   */
+  /** 线程的类型0和1. */
   private final int threadType;
-  /**
-   * 线程运行的最大执行时间.
-   */
+  /** 线程运行的最大执行时间. */
   private final long maxExecTime;
-  /**
-   * 线程运行的最大执行时间单位.
-   */
+  /** 线程运行的最大执行时间单位. */
   private final TimeUnit maxExecTimeUnit;
 
   /**
@@ -52,7 +33,7 @@ public class StudyThreadFactory implements ThreadFactory {
    *
    * <p>Another description after blank line.
    *
-   * @param prefixParam  线程名前缀.
+   * @param prefixParam 线程名前缀.
    * @param checkerParam 线程监听检查对象.
    * @author admin
    */
@@ -74,10 +55,10 @@ public class StudyThreadFactory implements ThreadFactory {
    *
    * <p>Another description after blank line.
    *
-   * @param prefixParam          线程名前缀.
-   * @param checkerParam         线程监听检查对象.
-   * @param threadTypeParam      .
-   * @param maxExecTimeParam     .
+   * @param prefixParam 线程名前缀.
+   * @param checkerParam 线程监听检查对象.
+   * @param threadTypeParam .
+   * @param maxExecTimeParam .
    * @param maxExecTimeUnitParam .
    * @author admin
    */
@@ -117,7 +98,6 @@ public class StudyThreadFactory implements ThreadFactory {
     if (checker != null) {
       // 注册线程.
       checker.registerThread(t);
-      LOGGER.log(Level.INFO, "注册线程{0}", t);
     }
     // 设置线程为守护线程.不能阻止外部调用程序jvm退出.
     t.setDaemon(true);

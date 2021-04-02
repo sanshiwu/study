@@ -1,7 +1,7 @@
 package org.study.juli.logging.queue;
 
 import java.util.concurrent.TimeUnit;
-import java.util.logging.LogRecord;
+import org.study.juli.logging.core.LogRecord;
 
 /**
  * This is a class description.

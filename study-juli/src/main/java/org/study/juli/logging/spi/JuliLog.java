@@ -1,12 +1,12 @@
-package org.study.juli.logging.logger;
+package org.study.juli.logging.spi;
 
 import java.util.Objects;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.study.juli.logging.base.Constants;
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.core.LogRecord;
+import org.study.juli.logging.logger.JuliLogger;
 import org.study.juli.logging.formatter.StudyJuliMessageHandler;
+import org.study.juli.logging.handler.Handler;
+import org.study.juli.logging.core.Level;
 import org.study.juli.logging.thread.StudyThread;
 
 /**
@@ -16,9 +16,9 @@ import org.study.juli.logging.thread.StudyThread;
  *
  * @author admin
  */
-public class Logging implements Log {
+public class JuliLog implements Log {
   /** 一个Logger对象对应一个Logging对象. */
-  private final Logger logger;
+  private final JuliLogger logger;
   /** 方法的当前堆栈元素,采用全局变量的原因是同一个对象,方法调用栈都是相同的,不用每次方法都调用一次(否则性能下降很多). */
   private StackTraceElement stackTraceElement;
 
@@ -29,8 +29,8 @@ public class Logging implements Log {
    *
    * @author admin
    */
-  public Logging() {
-    logger = Logger.getLogger(Logging.class.getName());
+  public JuliLog() {
+    logger = JuliLogger.getLogger(JuliLog.class.getName());
   }
 
   /**
@@ -40,8 +40,8 @@ public class Logging implements Log {
    *
    * @author admin
    */
-  public Logging(final String name) {
-    logger = Logger.getLogger(name);
+  public JuliLog(final String name) {
+    logger = JuliLogger.getLogger(name);
   }
 
   /**
@@ -77,8 +77,12 @@ public class Logging implements Log {
       // 获取线程当前的唯一消息ID.
       unique = studyThread.getUnique();
     }
-    // 调用JDK日志打印方法,循环查找当前logger注册的handler.循环调用handler的publish方法.
-    logger.logp(level, className, classMethod, unique + " " + message, throwable);
+    LogRecord lr = new LogRecord(level, message);
+    lr.setSourceClassName(className);
+    lr.setSourceMethodName(classMethod);
+    lr.setThrown(throwable);
+    lr.setUniqueId(unique);
+    logger.logp(lr);
   }
 
   /**
@@ -157,9 +161,7 @@ public class Logging implements Log {
   @Override
   public void info(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.INFO)) {
-      logCore(Level.INFO, message, args);
-    }
+    logCore(Level.INFO, message, args);
   }
 
   /**
@@ -173,9 +175,7 @@ public class Logging implements Log {
   @Override
   public void info(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.INFO)) {
-      logCore(Level.OFF, message);
-    }
+    logCore(Level.OFF, message);
   }
 
   /**
@@ -190,9 +190,7 @@ public class Logging implements Log {
   @Override
   public void debug(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.FINE)) {
-      logCore(Level.FINE, message, args);
-    }
+    logCore(Level.FINE, message, args);
   }
 
   /**
@@ -206,9 +204,7 @@ public class Logging implements Log {
   @Override
   public void debug(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.FINE)) {
-      logCore(Level.OFF, message);
-    }
+    logCore(Level.OFF, message);
   }
 
   /**
@@ -223,9 +219,7 @@ public class Logging implements Log {
   @Override
   public void trace(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.FINER)) {
-      logCore(Level.FINER, message, args);
-    }
+    logCore(Level.FINER, message, args);
   }
 
   /**
@@ -239,9 +233,7 @@ public class Logging implements Log {
   @Override
   public void trace(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.FINER)) {
-      logCore(Level.OFF, message);
-    }
+    logCore(Level.OFF, message);
   }
 
   /**
@@ -256,9 +248,7 @@ public class Logging implements Log {
   @Override
   public void warn(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.WARNING)) {
-      logCore(Level.WARNING, message, args);
-    }
+    logCore(Level.WARNING, message, args);
   }
 
   /**
@@ -272,9 +262,7 @@ public class Logging implements Log {
   @Override
   public void warn(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.WARNING)) {
-      logCore(Level.OFF, message);
-    }
+    logCore(Level.OFF, message);
   }
 
   /**
@@ -289,9 +277,7 @@ public class Logging implements Log {
   @Override
   public void error(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.SEVERE)) {
-      logCore(Level.SEVERE, message, args);
-    }
+    logCore(Level.SEVERE, message, args);
   }
 
   /**
@@ -305,9 +291,7 @@ public class Logging implements Log {
   @Override
   public void error(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.SEVERE)) {
-      logCore(Level.OFF, message);
-    }
+    logCore(Level.OFF, message);
   }
 
   /**
@@ -322,9 +306,7 @@ public class Logging implements Log {
   @Override
   public void fatal(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.SEVERE)) {
-      logCore(Level.SEVERE, message, args);
-    }
+    logCore(Level.SEVERE, message, args);
   }
 
   /**
@@ -338,9 +320,7 @@ public class Logging implements Log {
   @Override
   public void fatal(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.CONFIG)) {
-      logCore(Level.OFF, message);
-    }
+    logCore(Level.OFF, message);
   }
 
   /**
@@ -354,9 +334,7 @@ public class Logging implements Log {
   @Override
   public void config(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.CONFIG)) {
-      logCore(Level.CONFIG, message);
-    }
+    logCore(Level.CONFIG, message);
   }
 
   /**
@@ -371,9 +349,7 @@ public class Logging implements Log {
   @Override
   public void config(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.CONFIG)) {
-      logCore(Level.CONFIG, message, args);
-    }
+    logCore(Level.CONFIG, message, args);
   }
 
   /**
@@ -387,9 +363,7 @@ public class Logging implements Log {
   @Override
   public void all(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.ALL)) {
-      logCore(Level.ALL, message);
-    }
+    logCore(Level.ALL, message);
   }
 
   /**
@@ -404,9 +378,7 @@ public class Logging implements Log {
   @Override
   public void all(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.ALL)) {
-      logCore(Level.ALL, message, args);
-    }
+    logCore(Level.ALL, message, args);
   }
 
   /**
@@ -420,9 +392,8 @@ public class Logging implements Log {
   @Override
   public void off(final String message) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.OFF)) {
-      logCore(Level.OFF, message);
-    }
+
+    logCore(Level.OFF, message);
   }
 
   /**
@@ -437,8 +408,6 @@ public class Logging implements Log {
   @Override
   public void off(final String message, final Object... args) {
     // Logger的日志级别优先过滤不合法的日志,之后用处理器handler的日志级别过滤不合法的日志,最后才是Filter自定义过滤.
-    if (logger.isLoggable(Level.OFF)) {
-      logCore(Level.OFF, message, args);
-    }
+    logCore(Level.OFF, message, args);
   }
 }

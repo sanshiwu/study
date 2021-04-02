@@ -1,7 +1,6 @@
 package org.study.juli.spi.examples.example;
 
-import org.apache.logging.log4j.ThreadContext;
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
 import org.study.juli.spi.examples.Example5.Examples5;
 import org.study.juli.spi.examples.example1.Test1;

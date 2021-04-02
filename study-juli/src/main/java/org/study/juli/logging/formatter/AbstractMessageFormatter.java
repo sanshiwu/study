@@ -1,8 +1,7 @@
 package org.study.juli.logging.formatter;
 
 import java.text.MessageFormat;
-import java.util.logging.Formatter;
-import java.util.logging.LogRecord;
+import org.study.juli.logging.core.LogRecord;
 
 /**
  * This is a class description.
@@ -13,7 +12,11 @@ import java.util.logging.LogRecord;
  * @version 2021-03-27 10:50
  * @since 2021-03-27 10:50:00
  */
-public abstract class AbstractMessageFormatter extends Formatter {
+public abstract class AbstractMessageFormatter implements Formatter {
+
+  protected AbstractMessageFormatter() {
+    //
+  }
 
   /**
    * 兼容JDK原生的日志格式.
@@ -33,7 +36,7 @@ public abstract class AbstractMessageFormatter extends Formatter {
           break;
         }
         final char digit = message.charAt(index + 1);
-        if (digit >= '0' & digit <= '9') {
+        if (digit >= '0' && digit <= '9') {
           message = MessageFormat.format(message, parameters);
         }
       }

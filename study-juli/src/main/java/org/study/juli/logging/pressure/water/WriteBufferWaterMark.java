@@ -1,5 +1,7 @@
 package org.study.juli.logging.pressure.water;
 
+import org.study.juli.logging.base.Constants;
+
 /**
  * This is a class description.
  *
@@ -29,11 +31,13 @@ public class WriteBufferWaterMark {
   @Override
   public String toString() {
     StringBuilder builder =
-        new StringBuilder(55)
+        new StringBuilder(Constants.LEN_COUNT)
             .append("WriteBufferWaterMark(low: ")
             .append(low)
             .append(", high: ")
             .append(high)
+            .append(", type: ")
+            .append(type)
             .append(")");
     return builder.toString();
   }

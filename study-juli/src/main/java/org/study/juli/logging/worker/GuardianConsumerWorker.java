@@ -1,9 +1,9 @@
 package org.study.juli.logging.worker;
 
-import java.util.logging.Handler;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.handler.FileHandler;
 import org.study.juli.logging.handler.FileHandlerV2;
+import org.study.juli.logging.handler.Handler;
 import org.study.juli.logging.queue.FileQueue;
 import org.study.juli.logging.queue.StudyHandler;
 
@@ -33,7 +33,7 @@ public class GuardianConsumerWorker implements StudyHandler<Handler> {
       long c = System.currentTimeMillis();
       // 如果当前处理器最后一条日志的时间不为空(为空代表没有接收到日志消息),并且距离当前时刻,系统时间超过了2秒.
       if (sys != 0L && (c - sys) > Constants.MAX_FREE_TIME) {
-        FileQueue fileQueue = value.fileQueue;
+        FileQueue fileQueue = value.getFileQueue();
         int size = fileQueue.size();
         if (size != 0) {
           // 一次处理5000条.
@@ -49,7 +49,7 @@ public class GuardianConsumerWorker implements StudyHandler<Handler> {
       long c = System.currentTimeMillis();
       // 如果当前处理器最后一条日志的时间不为空(为空代表没有接收到日志消息),并且距离当前时刻,系统时间超过了2秒.
       if (sys != 0L && (c - sys) > Constants.MAX_FREE_TIME) {
-        FileQueue fileQueue = value.fileQueue;
+        FileQueue fileQueue = value.getFileQueue();
         int size = fileQueue.size();
         if (size != 0) {
           // 一次处理5000条.

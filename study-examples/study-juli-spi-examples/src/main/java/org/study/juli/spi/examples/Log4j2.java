@@ -2,7 +2,7 @@ package org.study.juli.spi.examples;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.spi.Log;
 
 /**
  * This is a class description.

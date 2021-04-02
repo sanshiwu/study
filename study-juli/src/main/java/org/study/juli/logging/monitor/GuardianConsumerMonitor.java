@@ -3,8 +3,6 @@ package org.study.juli.logging.monitor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.context.WorkerContext;
 import org.study.juli.logging.runnable.GuardianConsumerMonitorRunnable;
@@ -19,14 +17,7 @@ import org.study.juli.logging.runnable.GuardianConsumerMonitorRunnable;
  * @author admin
  */
 public class GuardianConsumerMonitor implements Monitor {
-
-  /**
-   * .
-   */
-  private static final Logger LOGGER = Logger.getLogger(GuardianConsumerMonitor.class.getName());
-  /**
-   * 调用任务,优雅关闭时,调用对象shutdown方法.
-   */
+  /** 调用任务,优雅关闭时,调用对象shutdown方法. */
   private ScheduledFuture<?> scheduledFuture;
 
   /**
@@ -53,7 +44,6 @@ public class GuardianConsumerMonitor implements Monitor {
     // 得到上下文中的定时器线程池.
     final ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
     Runnable runnable = new GuardianConsumerMonitorRunnable(context);
-    LOGGER.log(Level.INFO, "启动守护消费监听线程.");
     // 启动定时器,每5s运行一次任务,检查所有线程的运行情况.
     scheduledFuture =
         scheduledExecutorService.scheduleAtFixedRate(

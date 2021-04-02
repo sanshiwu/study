@@ -1,7 +1,6 @@
 package org.study.juli.logging.filter;
 
-import java.util.logging.Filter;
-import java.util.logging.LogRecord;
+import org.study.juli.logging.core.LogRecord;
 
 /**
  * 对日志进行过滤.

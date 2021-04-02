@@ -2,6 +2,8 @@ package org.study.juli.logging.queue;
 
 import java.util.concurrent.LinkedBlockingDeque;
 import org.study.juli.logging.base.Constants;
+import org.study.juli.logging.core.Level;
+import org.study.juli.logging.logger.JuliLogger;
 
 /**
  * This is a method description.
@@ -12,6 +14,8 @@ import org.study.juli.logging.base.Constants;
  * @author admin
  */
 public abstract class AbstractQueue<T> implements StudyQueue<T> {
+  /** . */
+  private static final JuliLogger LOGGER = JuliLogger.getLogger(AbstractQueue.class.getName());
   /** 阻塞队列名称,按照业务划分. */
   protected String target;
   /** 双端链表阻塞队列,可以头尾操作. */
@@ -30,6 +34,7 @@ public abstract class AbstractQueue<T> implements StudyQueue<T> {
   protected AbstractQueue(final String target) {
     this.target = target;
     this.queue = new LinkedBlockingDeque<>(capacity);
+    LOGGER.logp(Level.SEVERE, AbstractQueue.class.getName(), "构造方法", "创建队列{0}", target);
   }
 
   /**

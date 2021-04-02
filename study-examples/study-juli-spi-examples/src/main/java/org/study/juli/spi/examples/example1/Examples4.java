@@ -1,6 +1,6 @@
 package org.study.juli.spi.examples.example1;
 
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
 
 /**

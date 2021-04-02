@@ -11,7 +11,7 @@ import org.study.agent.examples.first.example4.example6.Examples6;
 import org.study.agent.examples.first.example5.Examples5;
 import org.study.agent.examples.first.example5.Test5;
 import org.study.agent.examples.first.example6.Example6;
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
 
 /**

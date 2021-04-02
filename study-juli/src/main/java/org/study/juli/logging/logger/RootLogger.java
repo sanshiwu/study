@@ -1,6 +1,4 @@
-package org.study.juli.logging.manager;
-
-import java.util.logging.Logger;
+package org.study.juli.logging.logger;
 
 /**
  * This is a class description.
@@ -9,7 +7,7 @@ import java.util.logging.Logger;
  *
  * @author admin
  */
-public class RootLogger extends Logger {
+public class RootLogger extends JuliLogger {
 
   /**
    * This is a method description.
@@ -19,6 +17,6 @@ public class RootLogger extends Logger {
    * @author admin
    */
   public RootLogger() {
-    super("", null);
+    super("");
   }
 }

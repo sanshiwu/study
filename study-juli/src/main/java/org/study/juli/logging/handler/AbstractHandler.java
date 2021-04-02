@@ -1,6 +1,7 @@
 package org.study.juli.logging.handler;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -10,13 +11,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
 import org.study.juli.logging.context.WorkerContext;
 import org.study.juli.logging.context.WorkerStudyContextImpl;
+import org.study.juli.logging.core.Level;
+import org.study.juli.logging.core.LogRecord;
+import org.study.juli.logging.filter.Filter;
+import org.study.juli.logging.formatter.Formatter;
+import org.study.juli.logging.manager.AbstractLogManager;
 import org.study.juli.logging.monitor.GuardianConsumerMonitor;
 import org.study.juli.logging.monitor.Monitor;
 import org.study.juli.logging.monitor.ThreadMonitor;
+import org.study.juli.logging.pressure.policy.StudyRejectedPolicy;
 import org.study.juli.logging.thread.StudyThreadFactory;
 
 /**
@@ -26,7 +31,7 @@ import org.study.juli.logging.thread.StudyThreadFactory;
  *
  * @author admin
  */
-public abstract class AbstractHandler extends Handler {
+public abstract class AbstractHandler implements Handler {
   /** 线程阻塞的最大时间时10秒.如果不超过15秒,打印warn.如果超过15秒打印异常堆栈. */
   protected static final Monitor CHECKER = new ThreadMonitor(15000L);
   /** 线程池. */
@@ -34,13 +39,13 @@ public abstract class AbstractHandler extends Handler {
   /** 线程池. */
   protected static final ExecutorService LOG_PRODUCER =
       new ThreadPoolExecutor(
-          2,
-          2,
+          1,
+          1,
           0,
           TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<>(1000000),
+          new LinkedBlockingQueue<>(5000),
           new StudyThreadFactory("log-producer", CHECKER),
-          new ThreadPoolExecutor.AbortPolicy());
+          new StudyRejectedPolicy());
 
   /** 线程池. */
   protected static final ExecutorService LOG_GUARDIAN_CONSUMER =
@@ -49,20 +54,20 @@ public abstract class AbstractHandler extends Handler {
           1,
           0,
           TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<>(1000000),
+          new LinkedBlockingQueue<>(5000),
           new StudyThreadFactory("log-guardian-consumer", CHECKER),
-          new ThreadPoolExecutor.AbortPolicy());
+          new StudyRejectedPolicy());
 
   /** 线程池. CallerRunsPolicy 拒绝策略不丢数据,因为在主线程上执行. */
   protected static final ExecutorService LOG_CONSUMER =
       new ThreadPoolExecutor(
-          2,
-          2,
+          1,
+          1,
           0,
           TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<>(1000000),
+          new LinkedBlockingQueue<>(5000),
           new StudyThreadFactory("log-consumer", CHECKER),
-          new ThreadPoolExecutor.AbortPolicy());
+          new StudyRejectedPolicy());
   /** 服务器端的定时调度线程池. */
   protected static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
       new ScheduledThreadPoolExecutor(3, new StudyThreadFactory("study_scheduled", null));
@@ -82,13 +87,14 @@ public abstract class AbstractHandler extends Handler {
           1,
           0,
           TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<>(1000000),
+          new LinkedBlockingQueue<>(5000),
           new StudyThreadFactory("log-producer-notice-consumer", CHECKER),
-          new ThreadPoolExecutor.AbortPolicy());
+          new StudyRejectedPolicy());
   /** 工作任务上下文. */
   protected static final WorkerContext LOG_PRODUCER_NOTICE_CONSUMER_CONTEXT =
       new WorkerStudyContextImpl(LOG_PRODUCER_NOTICE_CONSUMER, SCHEDULED_EXECUTOR_SERVICE);
 
+  protected static final int OFF_VALUE = Level.OFF.intValue();
   static {
     // 线程监控任务.
     CHECKER.monitor(LOG_PRODUCER_CONTEXT);
@@ -100,7 +106,7 @@ public abstract class AbstractHandler extends Handler {
 
   /** 代表当前处理器接收到最后一条日志的时间,0L表示从来没接收到. */
   protected long sys;
-  /** . */
+  /** 按照文件名翻转日志文件. */
   protected long initialization;
   /** 间隔. */
   protected int interval;
@@ -114,6 +120,12 @@ public abstract class AbstractHandler extends Handler {
   protected final Lock readLock = this.readWriteLock.readLock();
   /** 非公平写锁. */
   protected final Lock writeLock = this.readWriteLock.writeLock();
+
+  protected final AbstractLogManager manager = AbstractLogManager.getLogManager();
+  protected Filter filter;
+  protected Formatter formatter;
+  protected Level logLevel = Level.ALL;
+  protected String encoding;
 
   /**
    * 关闭资源方法,一般处理优雅关闭应用程序时调用.
@@ -144,7 +156,7 @@ public abstract class AbstractHandler extends Handler {
     // 获取当前的类的全路径.
     String className = this.getClass().getName();
     // 获取当前类的配置属性.
-    String value = LogManager.getLogManager().getProperty(className + name);
+    String value = AbstractLogManager.getLogManager().getProperty(className + name);
     // 如果空,使用默认值.
     if (value == null) {
       value = defaultValue;
@@ -165,5 +177,58 @@ public abstract class AbstractHandler extends Handler {
    */
   public long getSys() {
     return this.sys;
+  }
+
+  public synchronized void setFormatter(Formatter newFormatter) throws SecurityException {
+    checkPermission();
+    formatter = Objects.requireNonNull(newFormatter);
+  }
+
+  public synchronized Formatter getFormatter() {
+    return formatter;
+  }
+
+  public synchronized void setEncoding(String encoding)
+      throws SecurityException{
+    checkPermission();
+    this.encoding = encoding;
+  }
+
+  public synchronized String getEncoding() {
+    return encoding;
+  }
+
+  public synchronized void setFilter(Filter newFilter) throws SecurityException {
+    checkPermission();
+    filter = newFilter;
+  }
+
+  public synchronized Filter getFilter() {
+    return filter;
+  }
+
+  public synchronized void setLevel(Level newLevel) throws SecurityException {
+    checkPermission();
+    logLevel = newLevel;
+  }
+
+  public synchronized Level getLevel() {
+    return logLevel;
+  }
+
+  public boolean isLoggable(LogRecord record) {
+    final int levelValue = getLevel().intValue();
+    if (record.getLevel().intValue() < levelValue || levelValue == OFF_VALUE) {
+      return false;
+    }
+    final Filter filterTemp = getFilter();
+    if (filterTemp == null) {
+      return true;
+    }
+    return filterTemp.isLoggable(record);
+  }
+
+  public void checkPermission() throws SecurityException {
+    manager.checkPermission();
   }
 }

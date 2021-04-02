@@ -12,7 +12,6 @@ import org.study.juli.logging.context.StudyContext;
  * @author admin
  */
 public final class StudyThread extends Thread {
-
   /** 线程类型. */
   private final int threadType;
   /** 线程最大的执行时间. */

@@ -11,10 +11,9 @@ import org.study.juli.examples.example4.Test4;
 import org.study.juli.examples.example4.example6.Examples6;
 import org.study.juli.examples.example5.Test5;
 import org.study.juli.examples.example6.Example6;
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
 import org.study.juli.logging.queue.StudyHandler;
-import org.study.juli.logging.thread.StudyThread;
 
 /**
  * This is a class description.
@@ -27,18 +26,18 @@ import org.study.juli.logging.thread.StudyThread;
  */
 public class ExamplesWorker implements StudyHandler<Integer> {
   private static final Log log = LogFactory.getLog(Examples.class);
-  Examples1 examples2 = new Examples1();
-  Examples3 examples3 = new Examples3();
-  Examples4 examples4 = new Examples4();
-  Test test = new Test();
-  Examples5 examples5 = new Examples5();
-  Examples6 examples6 = new Examples6();
-  Example6 example6 = new Example6();
-  Test1 test1 = new Test1();
-  Test2 test2 = new Test2();
-  Test3 test3 = new Test3();
-  Test4 test4 = new Test4();
-  Test5 test5 = new Test5();
+  private Examples1 examples2 = new Examples1();
+  private Examples3 examples3 = new Examples3();
+  private Examples4 examples4 = new Examples4();
+  private Test test = new Test();
+  private Examples5 examples5 = new Examples5();
+  private Examples6 examples6 = new Examples6();
+  private Example6 example6 = new Example6();
+  private Test1 test1 = new Test1();
+  private Test2 test2 = new Test2();
+  private Test3 test3 = new Test3();
+  private Test4 test4 = new Test4();
+  private Test5 test5 = new Test5();
 
   @Override
   public void handle(Integer i) {

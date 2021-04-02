@@ -1,11 +1,10 @@
 package org.study.juli.logging.config;
 
 import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import org.study.juli.logging.handler.Handler;
+import org.study.juli.logging.logger.JuliLogger;
+import org.study.juli.logging.manager.AbstractLogManager;
 import org.study.juli.logging.manager.ClassLoaderLogInfo;
-import org.study.juli.logging.manager.StudyJuliLogManager;
 
 /**
  * 提供一个接口,动态修改Logger的配置.
@@ -15,10 +14,7 @@ import org.study.juli.logging.manager.StudyJuliLogManager;
  * @author admin
  */
 public class ConfigurationManagement implements Management {
-
-  /** . */
-  private final StudyJuliLogManager logManager = (StudyJuliLogManager) LogManager.getLogManager();
-
+  private final AbstractLogManager logManager = AbstractLogManager.getLogManager();
   /**
    * This is a method description.
    *
@@ -40,9 +36,8 @@ public class ConfigurationManagement implements Management {
    */
   @Override
   public void createHandler(final String handlerName) {
-    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     // 1.直接调用注册处理器方法,因为使用的是当前类加载器加载类,所以可以加载任意的新增加的class.基于这个可以动态增加第三方的处理器.
-    logManager.registerHandler(classLoader, getClassLoaderLogInfo(), handlerName);
+    logManager.registerHandler(getClassLoaderLogInfo(), handlerName);
   }
 
   /**
@@ -112,7 +107,7 @@ public class ConfigurationManagement implements Management {
    * @author admin
    */
   @Override
-  public Logger getLogger(final String loggerName) {
+  public JuliLogger getLogger(final String loggerName) {
     return loggers().get(loggerName);
   }
 
@@ -124,7 +119,7 @@ public class ConfigurationManagement implements Management {
    * @author admin
    */
   @Override
-  public Map<String, Logger> loggers() {
+  public Map<String, JuliLogger> loggers() {
     return getClassLoaderLogInfo().loggers;
   }
 

@@ -5,10 +5,10 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.context.WorkerContext;
+import org.study.juli.logging.core.Level;
+import org.study.juli.logging.logger.JuliLogger;
 import org.study.juli.logging.thread.StudyThread;
 
 /**
@@ -21,22 +21,13 @@ import org.study.juli.logging.thread.StudyThread;
  * @author admin
  */
 public class ThreadMonitor implements Monitor {
-
-  /**
-   * 使用自定义的通用的日志管理器.
-   */
-  private static final Logger LOGGER = Logger.getLogger(ThreadMonitor.class.getName());
-  /**
-   * 保存所有的线程,key是线程名字,value是线程.
-   */
+  /** 使用自定义的通用的日志管理器. */
+  private static final JuliLogger LOGGER = JuliLogger.getLogger(ThreadMonitor.class.getName());
+  /** 保存所有的线程,key是线程名字,value是线程. */
   private final Map<String, StudyThread> threads = new WeakHashMap<>(32);
-  /**
-   * 最大阻塞时间.
-   */
+  /** 最大阻塞时间. */
   private final long blockTime;
-  /**
-   * 调用任务,优雅关闭时,调用对象shutdown方法.
-   */
+  /** 调用任务,优雅关闭时,调用对象shutdown方法. */
   private ScheduledFuture<?> scheduledFuture;
 
   /**
@@ -118,15 +109,18 @@ public class ThreadMonitor implements Monitor {
       }
       if (duration <= blockTime) {
         // 如果小于等于阻塞时间,打印线程异常warn信息.
-        LOGGER.log(
+        LOGGER.logp(
             Level.WARNING,
+            ThreadMonitor.class.getName(),
+            "go",
             "线程{0}锁定{1}毫秒,限制{2}毫秒",
-            new Object[]{studyThread, duration, maxExecTime});
+            new Object[] {studyThread, duration, maxExecTime});
       } else {
         // 如果大于阻塞时间,打印线程可能的异常信息.
         final StackTraceElement[] stackTraces = studyThread.getStackTrace();
         for (final StackTraceElement stackTrace : stackTraces) {
-          LOGGER.log(Level.SEVERE, "线程运行异常?堆栈信息:{0}", stackTrace);
+          LOGGER.logp(
+              Level.SEVERE, ThreadMonitor.class.getName(), "go", "线程运行异常?堆栈信息:{0}", stackTrace);
         }
       }
     }

@@ -1,7 +1,7 @@
-package org.study.juli.logging.base;
+package org.study.juli.logging.spi;
 
-import java.util.logging.Handler;
-import java.util.logging.Level;
+import org.study.juli.logging.handler.Handler;
+import org.study.juli.logging.core.Level;
 
 /**
  * This is a method description.

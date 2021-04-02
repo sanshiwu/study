@@ -2,6 +2,7 @@ package org.study.juli.logging.handler;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -9,16 +10,15 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.ErrorManager;
-import java.util.logging.Filter;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import org.study.juli.logging.base.Constants;
+import org.study.juli.logging.core.Level;
+import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.exception.StudyJuliRuntimeException;
+import org.study.juli.logging.filter.Filter;
+import org.study.juli.logging.formatter.Formatter;
 import org.study.juli.logging.queue.FileQueue;
 import org.study.juli.logging.queue.StudyHandler;
+import org.study.juli.logging.utils.ClassLoadingUtils;
 import org.study.juli.logging.worker.ProducerNoticeConsumerWorker;
 
 /**
@@ -28,15 +28,14 @@ import org.study.juli.logging.worker.ProducerNoticeConsumerWorker;
  *
  * @author admin
  */
-@SuppressWarnings({"java:S2658"})
 public class FileHandlerV2 extends AbstractHandler {
   /** 生产通知消费处理器.为Handler自己的队列创建一个生产者通知消费者处理程序. */
   private final StudyHandler<Handler> producerNoticeConsumerWorker =
       new ProducerNoticeConsumerWorker();
   /** . */
-  public final FileQueue fileQueue = new FileQueue("FileQueue");
-  /** . */
   private final Runnable consumerRunnable = createConsumerRunnable();
+  /** . */
+  private FileQueue fileQueue;
   /** . */
   private String suffix;
   /** . */
@@ -44,13 +43,11 @@ public class FileHandlerV2 extends AbstractHandler {
   /** . */
   private String directory;
   /** . */
-  private Formatter formatter;
-  /** . */
   private BufferedWriter bufferedWriter;
   /** . */
   private File logFilePath;
   /** 生产日志处理器. */
-  protected StudyHandler<LogRecord> producerWorker = fileQueue.createProducerWorker();
+  protected StudyHandler<LogRecord> producerWorker;
 
   /**
    * This is a method description.
@@ -63,6 +60,9 @@ public class FileHandlerV2 extends AbstractHandler {
     try {
       // 读取日志配置文件,初始化配置.
       config();
+      // 动态配置队列属性.
+      fileQueue = new FileQueue(prefix);
+      producerWorker = fileQueue.createProducerWorker();
       // 开始创建文件流,用于日志写入.
       open();
     } catch (Exception e) {
@@ -205,22 +205,20 @@ public class FileHandlerV2 extends AbstractHandler {
     // 设置日志文件的编码.
     setEncoding(getProperty(".encoding", "UTF-8"));
     // 设置日志文件的级别.
-    setLevel(Level.parse(getProperty(".level", "" + Level.ALL)));
+    setLevel(Level.findLevel(getProperty(".level", "" + Level.ALL)));
     // 设置日志文件的过滤器.
     String filterName = getProperty(".filter", "org.study.juli.logging.filter.StudyJuliFilter");
-    // 获取当前类加载器.
-    ClassLoader cl = Thread.currentThread().getContextClassLoader();
     // 设置过滤器.
-    setFilter((Filter) cl.loadClass(filterName).getConstructor().newInstance());
+    Constructor<?> filterConstructor = ClassLoadingUtils.constructor(filterName);
+    setFilter((Filter) filterConstructor.newInstance());
     // 获取日志格式化器.
     String formatterName =
         getProperty(".formatter", "org.study.juli.logging.formatter.StudyJuliMessageFormatter");
     // 设置日志格式化器.
-    setFormatter((Formatter) cl.loadClass(formatterName).getConstructor().newInstance());
+    Constructor<?> formatterConstructor = ClassLoadingUtils.constructor(formatterName);
+    setFormatter((Formatter) formatterConstructor.newInstance());
     // 设置日志格式化器.
     formatter = getFormatter();
-    // 设置日志错误管理器.
-    setErrorManager(new ErrorManager());
     // 日志的文件对象.
     logFilePath = getFile();
   }
@@ -361,5 +359,9 @@ public class FileHandlerV2 extends AbstractHandler {
     } finally {
       writeLock.unlock();
     }
+  }
+
+  public FileQueue getFileQueue() {
+    return fileQueue;
   }
 }

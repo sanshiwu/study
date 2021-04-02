@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
 
 /**

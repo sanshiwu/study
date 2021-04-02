@@ -1,6 +1,6 @@
 package org.study.juli.logging.worker;
 
-import java.util.logging.Handler;
+import org.study.juli.logging.handler.Handler;
 import org.study.juli.logging.queue.StudyHandler;
 
 /**

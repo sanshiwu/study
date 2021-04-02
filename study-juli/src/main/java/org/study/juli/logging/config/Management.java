@@ -1,8 +1,8 @@
 package org.study.juli.logging.config;
 
 import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+import org.study.juli.logging.handler.Handler;
+import org.study.juli.logging.logger.JuliLogger;
 import org.study.juli.logging.manager.ClassLoaderLogInfo;
 
 /**
@@ -48,7 +48,7 @@ public interface Management {
    *
    * @author admin
    */
-  Logger getLogger(final String loggerName);
+  JuliLogger getLogger(final String loggerName);
 
   /**
    * This is a method description.
@@ -75,7 +75,7 @@ public interface Management {
    *
    * @author admin
    */
-  Map<String, Logger> loggers();
+  Map<String, JuliLogger> loggers();
 
   /**
    * This is a method description.

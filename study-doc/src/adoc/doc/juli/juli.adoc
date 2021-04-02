@@ -20,9 +20,12 @@ Juli provides functionality for things like:
 
 * Thread pool queue rejection policies back pressure mechanism.
 
-* More refined processing log. For example, Handler condition,Custom filter.
+* More refined processing log.
+For example, Handler condition,Custom filter.
 
 * Batch.
+
+* Thread management and monitoring.
 
 * Compatible Native java.util.logging.
 
@@ -192,7 +195,7 @@ include::{docdir}/study-doc/pom.xml[]
 The POM Code Convention is the Maven project's internal recommendation for POM element ordering.
 It calls for listing modifiers in the following order:
 
-[source,xml]
+[source]
 ----
 <modelVersion/>
 <parent/>
@@ -280,9 +283,9 @@ Suppose our root directory is: `F:`
 
 需要设置系统参数:
 
--Djava.util.logging.manager
+-Dorg.study.juli.logging.manager
 
--Djava.util.logging.config.file
+-Dorg.study.juli.logging.config.file
 
 ==== The first way:
 
@@ -292,7 +295,7 @@ Suppose our root directory is: `F:`
 
 [source]
 ----
- java -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="F:\study-examples\study-juli-examples\src
+ java -D"org.study.juli.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"org.study.juli.logging.config.file"="F:\study-examples\study-juli-examples\src
 \main\resources\logging.properties" -classpath "F:\study-examples\study-juli-examples\target\classes;F:\study-juli\target\classes;" org.study.juli.examples.example.Examples
 ----
 
@@ -327,20 +330,20 @@ java -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examp
 [source]
 ----
 使用juli
-java -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
+java -D"org.study.juli.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"org.study.juli.logging.config.file"="./conf/logging.properties" -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
 ----
 
 [source]
 ----
 使用juli增加探针:
-java -D"info"="false" -D"generateClass"="false" -D"packageName"="org.study"  -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -javaagent:"./lib/study-agent-2020.jar" -classpath "./lib/*;./examples/study-juli-examples/*;G:\maven3.6.3\repository\org\javassist\javassist\3.22.0-GA\javassist-3.22.0-GA.jar;" org.study.juli.examples.example.Examples
+java -D"info"="false" -D"generateClass"="false" -D"packageName"="org.study"  -D"org.study.juli.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"org.study.juli.logging.config.file"="./conf/logging.properties" -javaagent:"./lib/study-agent-2020.jar" -classpath "./lib/*;./examples/study-juli-examples/*;G:\maven3.6.3\repository\org\javassist\javassist\3.22.0-GA\javassist-3.22.0-GA.jar;" org.study.juli.examples.example.Examples
 ----
 
 [source]
 ----
 打开安全管理器
-java -D"java.security.manager" -D"study.home"="." -D"java.security.policy"="./conf/juli.policy" -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
-java -D"java.security.manager" -D"study.home"="." -D"java.security.policy"="./conf/juli.policy" -D"java.util.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"java.util.logging.config.file"="./conf/logging.properties" -classpath "./lib/study-juli-2020.jar;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
+java -D"java.security.manager" -D"study.home"="." -D"java.security.policy"="./conf/juli.policy" -D"org.study.juli.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"org.study.juli.logging.config.file"="./conf/logging.properties" -classpath "./lib/*;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
+java -D"java.security.manager" -D"study.home"="." -D"java.security.policy"="./conf/juli.policy" -D"org.study.juli.logging.manager"="org.study.juli.logging.manager.StudyJuliLogManager" -D"org.study.juli.logging.config.file"="./conf/logging.properties" -classpath "./lib/study-juli-2020.jar;./examples/study-juli-examples/*;" org.study.juli.examples.example.Examples
 ----
 
 * LOG4J2
@@ -551,7 +554,8 @@ A:Thread pool queue rejection policies.
 
 `ThreadPoolExecutor.CallerRunsPolicy()`
 
-This is not an elegant solution. But it's very useful.
+This is not an elegant solution.
+But it's very useful.
 
 The only drawback is: The downstream threads block upstream threads and use them to execute tasks(Block upstream Thread).This will cause the upstream thread life cycle to end ahead of time, and the internal data of the thread will change, such as the internal variables of the thread.
 
@@ -602,6 +606,8 @@ Later continue to optimize:
 * Log datetime support any time zone conversion.
 Currently, only UTC is supported.
 
+* Jdk Jul sends log messages to the processor synchronously,In the future, we will consider a completely independent log core module instead of Jdk Jul.
+
 === What is the Juli versioning policy?
 
 Version policy uses JEP322
@@ -612,7 +618,8 @@ According to JEP322.
 
 === Can I use Juli with my favorite data format (JSON)?
 
-The JSON format is provided by default. Other formats are not supported.
+The JSON format is provided by default.
+Other formats are not supported.
 
 === Can I use Juli on our company's projects?
 
@@ -638,7 +645,7 @@ learn侧重指通过经验,练习或经别人指教而获得知识或技能,强�
 学习技能,向某人学习只能用learn.
 learn指"学习,学会",侧重学习的成果,指从不知到知,从不会到会的学习,强调通过学习去获得知识和技能,它没有凭勤奋努力而获得知识的意味.
 learn亦可指向某人学习,从某处学习及学习一门技能等.
-如:learn music, learn new words, learn to skate, learn from experience, learn from LeiFeng.
+如:learn music, learn new words, learn to skate, learn from experience, learn from Lei Feng.
 
 . study可以用作名词和动词,可以翻译为学习,研究等等.
 study指专心钻研而获得知识,有探讨和研究的意思,强调学习的过程.

@@ -1,6 +1,6 @@
 package org.study.agent.examples.first.example3;
 
-import org.study.juli.logging.base.Log;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
 
 /**
