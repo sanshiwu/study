@@ -15,23 +15,23 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class FileOutboundBuffer extends AbstractBoundBuffer {
   /** 未来可以考虑使用AtomicLongFieldUpdater. */
-  private static final AtomicLong count = new AtomicLong(0L);
+  private final AtomicLong count = new AtomicLong(0L);
   /** 未来可以考虑使用AtomicLongFieldUpdater. */
-  private static final AtomicLong size = new AtomicLong(0L);
+  private final AtomicLong size = new AtomicLong(0L);
   /** 控制写水位的锁. */
-  private static final ReentrantLock lock = new ReentrantLock();
+  private final ReentrantLock lock = new ReentrantLock();
   /** Condition for waiting takes */
-  private static final Condition countLimitLockCondition = lock.newCondition();
+  private final Condition countLimitLockCondition = lock.newCondition();
 
-  private static final AtomicBoolean isReadable = new AtomicBoolean(true);
+  private final AtomicBoolean isReadable = new AtomicBoolean(true);
 
   private FileOutboundBuffer() {
     //
   }
 
-  public static boolean isReadable() {
-    int countHigh = countWaterMark.high();
-    int sizeHigh = sizeWaterMark.high();
+  public boolean isReadable() {
+    int countHigh = COUNT_WATER_MARK.high();
+    int sizeHigh = SIZE_WATER_MARK.high();
     long l = count.get();
     long l1 = size.get();
     if (l >= countHigh || l1 >= sizeHigh) {
@@ -43,7 +43,7 @@ public final class FileOutboundBuffer extends AbstractBoundBuffer {
     }
   }
 
-  public static void await(String message) {
+  public void await(String message) {
     // 按照条件阻塞生产.
     lock.lock();
     try {
@@ -61,7 +61,7 @@ public final class FileOutboundBuffer extends AbstractBoundBuffer {
     }
   }
 
-  public static void signalAll(long s, long k) {
+  public void signalAll(long s, long k) {
     lock.lock();
     try {
       long l = count.get();

@@ -2,6 +2,13 @@ package org.study.juli.logging.core;
 
 import java.time.Instant;
 
+/**
+ * This is a method description.
+ *
+ * <p>Another description after blank line.
+ *
+ * @author admin
+ */
 public class LogRecord {
   private Level level;
   private String sourceClassName;

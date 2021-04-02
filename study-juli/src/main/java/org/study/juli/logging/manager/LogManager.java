@@ -18,32 +18,123 @@ import org.study.juli.logging.logger.JuliLogger;
  */
 public interface LogManager {
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   boolean addLogger(JuliLogger logger);
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   JuliLogger getLogger(String name);
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   Enumeration<String> getLoggerNames();
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   String getProperty(String name);
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void readConfiguration() throws SecurityException;
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void reset() throws SecurityException;
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void readConfiguration(InputStream ins) throws IOException, SecurityException;
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void updateConfiguration(Function<String, BiFunction<String, String, String>> mapper)
       throws IOException;
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void updateConfiguration(
       InputStream ins, Function<String, BiFunction<String, String, String>> mapper)
       throws IOException;
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void checkAccess() throws SecurityException;
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   AbstractLogManager addConfigurationListener(Runnable listener);
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void removeConfigurationListener(Runnable listener);
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   void checkPermission();
 }

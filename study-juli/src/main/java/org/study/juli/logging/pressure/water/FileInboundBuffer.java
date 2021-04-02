@@ -39,7 +39,7 @@ public final class FileInboundBuffer extends AbstractBoundBuffer {
   }
 
   public boolean checkHigh() {
-    int countHigh = countWaterMark.high();
+    int countHigh = COUNT_WATER_MARK.high();
     long l = count.get();
     if (l >= countHigh) {
       isWritable.set(false);
@@ -49,7 +49,7 @@ public final class FileInboundBuffer extends AbstractBoundBuffer {
   }
 
   public boolean checkLow() {
-    int countLow = countWaterMark.low();
+    int countLow = COUNT_WATER_MARK.low();
     long l = count.get();
     if (l < countLow) {
       isWritable.set(true);
@@ -77,8 +77,8 @@ public final class FileInboundBuffer extends AbstractBoundBuffer {
   }
 
   public boolean isReadable() {
-    int countHigh = countWaterMark.high();
-    int sizeHigh = sizeWaterMark.high();
+    int countHigh = COUNT_WATER_MARK.high();
+    int sizeHigh = SIZE_WATER_MARK.high();
     long l = count.get();
     long l1 = size.get();
     if (l >= countHigh || l1 >= sizeHigh) {

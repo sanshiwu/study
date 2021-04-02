@@ -107,7 +107,7 @@ public class JuliLogger extends AbstractJuliLogger {
 
   public void setLevel(Level newLevel) throws SecurityException {
     checkPermission();
-    synchronized (treeLock) {
+    synchronized (TREE_LOCK) {
       config.setLevelObject(newLevel);
       config.setLevelValue(newLevel.intValue());
     }
@@ -146,7 +146,7 @@ public class JuliLogger extends AbstractJuliLogger {
   }
 
   public Handler[] accessCheckedHandlers() {
-    return config.getHandlers().toArray(emptyHandlers);
+    return config.getHandlers().toArray(EMPTY_HANDLERS);
   }
 
   public void setUseParentHandlers(boolean useParentHandlers) {
@@ -171,7 +171,7 @@ public class JuliLogger extends AbstractJuliLogger {
   }
 
   private void doSetParent(JuliLogger newParent) {
-    synchronized (treeLock) {
+    synchronized (TREE_LOCK) {
       parent = newParent;
     }
   }

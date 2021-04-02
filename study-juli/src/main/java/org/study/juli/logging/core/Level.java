@@ -3,6 +3,13 @@ package org.study.juli.logging.core;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This is a method description.
+ *
+ * <p>Another description after blank line.
+ *
+ * @author admin
+ */
 public class Level {
 
   public static final Level OFF = new Level("OFF", Integer.MAX_VALUE);
@@ -23,18 +30,18 @@ public class Level {
 
   public static final Level ALL = new Level("ALL", Integer.MIN_VALUE);
 
-  private static final Map<String, Level> standardLevels = new HashMap<>(16);
+  private static final Map<String, Level> STANDARD_LEVELS = new HashMap<>(16);
 
   static {
-    standardLevels.put("OFF", OFF);
-    standardLevels.put("SEVERE", SEVERE);
-    standardLevels.put("WARNING", WARNING);
-    standardLevels.put("INFO", INFO);
-    standardLevels.put("CONFIG", CONFIG);
-    standardLevels.put("FINE", FINE);
-    standardLevels.put("FINER", FINER);
-    standardLevels.put("FINEST", FINEST);
-    standardLevels.put("ALL", ALL);
+    STANDARD_LEVELS.put("OFF", OFF);
+    STANDARD_LEVELS.put("SEVERE", SEVERE);
+    STANDARD_LEVELS.put("WARNING", WARNING);
+    STANDARD_LEVELS.put("INFO", INFO);
+    STANDARD_LEVELS.put("CONFIG", CONFIG);
+    STANDARD_LEVELS.put("FINE", FINE);
+    STANDARD_LEVELS.put("FINER", FINER);
+    STANDARD_LEVELS.put("FINEST", FINEST);
+    STANDARD_LEVELS.put("ALL", ALL);
   }
 
   private final String name;
@@ -55,7 +62,7 @@ public class Level {
   }
 
   public static Level findLevel(String name) {
-    return standardLevels.get(name);
+    return STANDARD_LEVELS.get(name);
   }
 
   @Override

@@ -21,6 +21,13 @@ public interface Formatter extends BooleanSupplier {
    */
   String format(LogRecord record);
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
   default boolean getAsBoolean() {
     return false;

@@ -179,6 +179,7 @@ public abstract class AbstractHandler implements Handler {
     return this.sys;
   }
 
+  @Override
   public synchronized void setFormatter(Formatter newFormatter) throws SecurityException {
     checkPermission();
     formatter = Objects.requireNonNull(newFormatter);
@@ -188,6 +189,7 @@ public abstract class AbstractHandler implements Handler {
     return formatter;
   }
 
+  @Override
   public synchronized void setEncoding(String encoding)
       throws SecurityException{
     checkPermission();
@@ -198,6 +200,7 @@ public abstract class AbstractHandler implements Handler {
     return encoding;
   }
 
+  @Override
   public synchronized void setFilter(Filter newFilter) throws SecurityException {
     checkPermission();
     filter = newFilter;
@@ -207,6 +210,7 @@ public abstract class AbstractHandler implements Handler {
     return filter;
   }
 
+  @Override
   public synchronized void setLevel(Level newLevel) throws SecurityException {
     checkPermission();
     logLevel = newLevel;
@@ -216,6 +220,7 @@ public abstract class AbstractHandler implements Handler {
     return logLevel;
   }
 
+  @Override
   public boolean isLoggable(LogRecord record) {
     final int levelValue = getLevel().intValue();
     if (record.getLevel().intValue() < levelValue || levelValue == OFF_VALUE) {
@@ -228,6 +233,7 @@ public abstract class AbstractHandler implements Handler {
     return filterTemp.isLoggable(record);
   }
 
+  @Override
   public void checkPermission() throws SecurityException {
     manager.checkPermission();
   }

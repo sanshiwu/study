@@ -25,7 +25,7 @@ import org.study.juli.logging.utils.ClassLoadingUtils;
  * @since 2021-04-01 10:58:00
  */
 public abstract class AbstractLogManager implements LogManager {
-  private static final AbstractLogManager abstractLogManager;
+  private static final AbstractLogManager ABSTRACT_LOGMANAGER;
   /** 自定义类加载器,目前只支持系统类加载器,不支持自定义类加载器. */
   public final Map<ClassLoader, ClassLoaderLogInfo> classLoaderLoggers = new WeakHashMap<>(1);
   /** 给线程绑定一个线程变量,目前阿里插件扫描到没有调用remove方法释放,实际已经调用. */
@@ -45,15 +45,15 @@ public abstract class AbstractLogManager implements LogManager {
     } catch (Exception e) {
       throw new StudyJuliRuntimeException(e);
     }
-    abstractLogManager = lm;
+    ABSTRACT_LOGMANAGER = lm;
   }
 
   public static AbstractLogManager getLogManager() {
-    if (abstractLogManager == null) {
+    if (ABSTRACT_LOGMANAGER == null) {
       throw new StudyJuliRuntimeException("");
     }
-    abstractLogManager.readConfiguration();
-    return abstractLogManager;
+    ABSTRACT_LOGMANAGER.readConfiguration();
+    return ABSTRACT_LOGMANAGER;
   }
 
   @Override
@@ -127,7 +127,6 @@ public abstract class AbstractLogManager implements LogManager {
    *
    * <p>Another description after blank line.
    *
-   * @param classLoader .
    * @param info .
    * @param handlerName .
    * @return Handler 注册的处理器.

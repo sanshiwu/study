@@ -20,8 +20,8 @@ import org.study.juli.logging.manager.ClassLoaderLogInfo;
  */
 public abstract class AbstractJuliLogger implements Logger {
   protected static final int OFF_VALUE = Level.OFF.intValue();
-  protected static final Handler[] emptyHandlers = new Handler[0];
-  protected static final Object treeLock = new Object();
+  protected static final Handler[] EMPTY_HANDLERS = new Handler[0];
+  protected static final Object TREE_LOCK = new Object();
   protected ConfigurationData config;
   protected AbstractLogManager manager;
   protected String name;

@@ -241,9 +241,9 @@ public class TrafficCounter extends AbstractCounter {
       readingTime = Math.max(localReadingTime, now);
       return 0;
     }
-    long lastRB = lastReadBytes;
+    long lastRb = lastReadBytes;
     // take the last read interval check to get enough interval time
-    long lastsum = sum + lastRB;
+    long lastsum = sum + lastRb;
     long lastinterval = interval + checkInterval.get();
     long time = lastsum * 1000 / limitTraffic - lastinterval + pastDelay;
     if (time > AbstractTrafficShaping.MINIMAL_WAIT) {
@@ -286,9 +286,9 @@ public class TrafficCounter extends AbstractCounter {
       writingTime = Math.max(localWritingTime, now);
       return 0;
     }
-    long lastWB = lastWrittenBytes;
+    long lastWb = lastWrittenBytes;
     // take the last write interval check to get enough interval time
-    long lastsum = sum + lastWB;
+    long lastsum = sum + lastWb;
     long lastinterval = interval + checkInterval.get();
     long time = lastsum * 1000 / limitTraffic - lastinterval + pastDelay;
     if (time > AbstractTrafficShaping.MINIMAL_WAIT) {
