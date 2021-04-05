@@ -8,9 +8,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.context.WorkerContext;
 import org.study.juli.logging.context.WorkerStudyContextImpl;
 import org.study.juli.logging.core.Level;
@@ -95,6 +97,13 @@ public abstract class AbstractHandler implements Handler {
       new WorkerStudyContextImpl(LOG_PRODUCER_NOTICE_CONSUMER, SCHEDULED_EXECUTOR_SERVICE);
 
   protected static final int OFF_VALUE = Level.OFF.intValue();
+  /** 全局handler日志计数. */
+  protected static final AtomicLong GLOBAL_COUNTER = new AtomicLong(0L);
+  /** 单个handler日志计数. */
+  protected final AtomicLong counter = new AtomicLong(0L);
+  /** 单个日志文件最大条数. */
+  protected final int limit = Constants.LIMIT;
+
   static {
     // 线程监控任务.
     CHECKER.monitor(LOG_PRODUCER_CONTEXT);
@@ -190,8 +199,7 @@ public abstract class AbstractHandler implements Handler {
   }
 
   @Override
-  public synchronized void setEncoding(String encoding)
-      throws SecurityException{
+  public synchronized void setEncoding(String encoding) throws SecurityException {
     checkPermission();
     this.encoding = encoding;
   }
@@ -236,5 +244,9 @@ public abstract class AbstractHandler implements Handler {
   @Override
   public void checkPermission() throws SecurityException {
     manager.checkPermission();
+  }
+
+  public AtomicLong getCounter() {
+    return counter;
   }
 }

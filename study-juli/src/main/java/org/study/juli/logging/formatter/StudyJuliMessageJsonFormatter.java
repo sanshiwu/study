@@ -3,6 +3,8 @@ package org.study.juli.logging.formatter;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.LogRecord;
@@ -94,9 +96,26 @@ public class StudyJuliMessageJsonFormatter extends AbstractMessageFormatter {
     sb.append(this.inQuotes("method") + ": ");
     sb.append(this.inQuotes(record.getSourceMethodName()));
     sb.append(",");
-    sb.append(this.inQuotes("uniqueId") + ": ");
-    sb.append(this.inQuotes(record.getUniqueId()));
+    sb.append(this.inQuotes("lineNumber") + ": ");
+    sb.append(this.inQuotes(record.getLineNumber() + ""));
     sb.append(",");
+    if (checkUnique()) {
+      sb.append(this.inQuotes("uniqueId") + ": ");
+      sb.append(this.inQuotes(record.getUniqueId()));
+      sb.append(",");
+    }
+    sb.append(this.inQuotes("serialNumber") + ": ");
+    sb.append(record.getSerialNumber());
+    sb.append(",");
+    // 日志自定义字段.
+    Map<String, String> customs = record.getCustoms();
+    for (Entry<String, String> entry : customs.entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue();
+      sb.append(this.inQuotes(key) + ": ");
+      sb.append(this.inQuotes(value));
+      sb.append(",");
+    }
     sb.append(this.inQuotes("message") + ": ");
     sb.append(this.inQuotes(message));
     // 如果有异常堆栈信息,则打印出来.

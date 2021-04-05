@@ -1,53 +1,69 @@
-package org.study.juli.logging.handler;
+package org.study.juli.examples.kafka;
 
-import java.io.BufferedWriter;
-import java.io.File;
 import java.lang.reflect.Constructor;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import org.study.juli.logging.base.Constants;
+import java.util.Properties;
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.config.SslConfigs;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.study.juli.logging.core.Level;
 import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.exception.StudyJuliRuntimeException;
 import org.study.juli.logging.filter.Filter;
 import org.study.juli.logging.formatter.Formatter;
-import org.study.juli.logging.queue.FileQueue;
+import org.study.juli.logging.handler.AbstractHandler;
+import org.study.juli.logging.handler.Handler;
 import org.study.juli.logging.queue.StudyHandler;
 import org.study.juli.logging.utils.ClassLoadingUtils;
 import org.study.juli.logging.worker.ProducerNoticeConsumerWorker;
 
 /**
- * This is a method description.
+ * This is a class description.
  *
  * <p>Another description after blank line.
  *
  * @author admin
+ * @version 2021-04-04 14:07
+ * @since 2021-04-04 14:07:00
  */
-public class FileHandlerV2 extends AbstractHandler {
+public class KafkaHandler extends AbstractHandler {
   /** 生产通知消费处理器.为Handler自己的队列创建一个生产者通知消费者处理程序. */
   private final StudyHandler<Handler> producerNoticeConsumerWorker =
       new ProducerNoticeConsumerWorker();
   /** . */
   private final Runnable consumerRunnable = createConsumerRunnable();
   /** . */
-  private FileQueue fileQueue;
-  /** . */
-  private String suffix;
-  /** . */
-  private String prefix;
-  /** . */
-  private String directory;
-  /** . */
-  private BufferedWriter bufferedWriter;
-  /** . */
-  private File logFilePath;
+  private KafkaQueue kafkaQueue;
   /** 生产日志处理器. */
   protected StudyHandler<LogRecord> producerWorker;
+
+  private String brokerList;
+  private String topic;
+  private String compressionType;
+  private String securityProtocol;
+  private String sslTruststoreLocation;
+  private String sslTruststorePassword;
+  private String sslKeystoreType;
+  private String sslKeystoreLocation;
+  private String sslKeystorePassword;
+  private String saslKerberosServiceName;
+  private String saslMechanism;
+  private String clientJaasConfPath;
+  private String clientJaasConf;
+  private String kerb5ConfPath;
+  private Integer maxBlockMs;
+  private String sslEngineFactoryClass;
+  private int lingerMs;
+  private Producer<String, String> producer;
 
   /**
    * This is a method description.
@@ -56,13 +72,13 @@ public class FileHandlerV2 extends AbstractHandler {
    *
    * @author admin
    */
-  public FileHandlerV2() {
+  public KafkaHandler() {
     try {
       // 读取日志配置文件,初始化配置.
       config();
       // 动态配置队列属性.
-      fileQueue = new FileQueue(prefix);
-      producerWorker = fileQueue.createProducerWorker();
+      kafkaQueue = new KafkaQueue(topic);
+      producerWorker = kafkaQueue.createProducerWorker();
       // 开始创建文件流,用于日志写入.
       open();
     } catch (Exception e) {
@@ -102,8 +118,6 @@ public class FileHandlerV2 extends AbstractHandler {
             closeIo();
             // 改变日志interval标志.
             initialization = currentLong;
-            // 将interval传递给队列对象.
-            logFilePath = getFile();
             // 重新打开新的的文件流.
             open();
           }
@@ -154,7 +168,7 @@ public class FileHandlerV2 extends AbstractHandler {
     // 启动一个线程,开始生产日志.(考虑将LogRecord预先格式化成字符串消息,LogRecord对象生命周期结束.)
     LOG_PRODUCER_CONTEXT.executeInExecutorService(record, producerWorker);
     // 如果队列容量大于等于5000,通知消费者消费.如果此时生产者不再生产数据,则队列中会有<5000条数据永久存在,因此需要启动一个守护者线程GUARDIAN处理.
-    int size = fileQueue.size();
+    int size = kafkaQueue.size();
     // 当前处理器的队列中日志消息达到5000条,处理一次.
     if (size >= Constants.BATCH_SIZE) {
       // 提交一个任务,用于通知消费者线程去消费队列数据.
@@ -188,13 +202,6 @@ public class FileHandlerV2 extends AbstractHandler {
     String rotatable = getProperty(".rotatable", "true");
     // 日志文件翻转开关.
     this.rotatable = Boolean.parseBoolean(rotatable);
-    // 设置日志文件翻转开关.
-    this.directory = getProperty(".directory", "logs");
-    // 设置日志文件目录.
-    this.prefix = getProperty(".prefix", "study_juli.");
-    // 设置日志文件前缀.
-    this.suffix = getProperty(".suffix", ".log");
-    // 设置日志文件后缀.
     // 设置日志文件翻转间隔.
     interval = Integer.parseInt(getProperty(".interval", "1"));
     // 设置日志文件翻转间隔格式化.
@@ -221,24 +228,6 @@ public class FileHandlerV2 extends AbstractHandler {
     setFormatter((Formatter) formatterConstructor.newInstance());
     // 设置日志格式化器.
     formatter = getFormatter();
-    // 日志的文件对象.
-    logFilePath = getFile();
-  }
-
-  private File getFile() {
-    File dir = new File(this.directory);
-    // 定位到日志绝对路径.
-    File logAbsoluteFile = dir.getAbsoluteFile();
-    if (!logAbsoluteFile.exists()) {
-      boolean make = logAbsoluteFile.mkdirs();
-      if (!make) {
-        throw new StudyJuliRuntimeException("目录创建异常.");
-      }
-    }
-    // 日志文件名.
-    String logFileName = this.prefix + (this.rotatable ? this.initialization : "") + this.suffix;
-    // 得到日志的完整路径.
-    return new File(logAbsoluteFile, logFileName);
   }
 
   /**
@@ -251,6 +240,7 @@ public class FileHandlerV2 extends AbstractHandler {
   public ConsumerRunnable createConsumerRunnable() {
     return new ConsumerRunnable();
   }
+
   /**
    * 消费者线程任务.
    *
@@ -270,7 +260,7 @@ public class FileHandlerV2 extends AbstractHandler {
     @Override
     public void run() {
       // 重新获取队列元素数.
-      int size = fileQueue.size();
+      int size = kafkaQueue.size();
       // 如果队列为空,不执行业务.
       if (size != 0) {
         // 如果元素数大于flushCount(默认100),则每次获取100条.否则直接获取全部元素.
@@ -279,56 +269,62 @@ public class FileHandlerV2 extends AbstractHandler {
     }
   }
 
-  /**
-   * This is a method description.
-   *
-   * <p>Another description after blank line.
-   *
-   * @author admin
-   */
   public void process(final int size) {
     try {
-      boolean flag = false;
       // 获取一批数据,写入磁盘.
       for (int i = 0; i < size; i++) {
-        // 10, TimeUnit.MILLISECONDS,不等待.
-        LogRecord logRecord = fileQueue.poll();
+        // 非阻塞方法获取队列元素.
+        LogRecord logRecord = kafkaQueue.poll();
         // 如果数量不够,导致从队列获取空对象.
-        if (logRecord != null) {
-          flag = true;
-          bufferedWriter.write(formatter.format(logRecord));
-        } else {
+        if (logRecord == null) {
           break;
         }
-      }
-      if (flag) {
-        // 刷新一次IO磁盘.
-        bufferedWriter.flush();
+        // 需要加写锁,可能会关闭. idempotence 幂等性.
+        String message = formatter.format(logRecord);
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, message);
+        // 异步发送,提供回调.如果同步发送,直接调用get方法.
+        producer.send(producerRecord, new KafkaProducerCallback());
       }
     } catch (Exception e) {
-      //
+      // ignore Exception.
       throw new StudyJuliRuntimeException(e);
     }
   }
 
-  /**
-   * 创建kafka客户端.
-   *
-   * <p>Another description after blank line.
-   *
-   * @author admin
-   */
   private void open() {
     writeLock.lock();
     try {
-      bufferedWriter =
-          Files.newBufferedWriter(
-              logFilePath.toPath(),
-              StandardCharsets.UTF_8,
-              StandardOpenOption.CREATE,
-              StandardOpenOption.WRITE,
-              StandardOpenOption.APPEND);
-      bufferedWriter.write("");
+      Properties props = new Properties();
+      props.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, brokerList);
+      props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionType);
+      props.put(ProducerConfig.ACKS_CONFIG, Constants.REQUIRED_NUM_ACK_S);
+      props.put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE);
+      props.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, Constants.DELIVERY_TIMEOUT_MS);
+      props.put(ProducerConfig.LINGER_MS_CONFIG, lingerMs);
+      props.put(ProducerConfig.BATCH_SIZE_CONFIG, Constants.BATCH_SIZE);
+      props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, securityProtocol);
+      props.put(SslConfigs.SSL_ENGINE_FACTORY_CLASS_CONFIG, sslEngineFactoryClass);
+
+      if (securityProtocol.contains("SSL")) {
+        props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, sslTruststoreLocation);
+        props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, sslTruststorePassword);
+        props.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, sslKeystoreType);
+        props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, sslKeystoreLocation);
+        props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, sslKeystorePassword);
+      }
+
+      if (securityProtocol.contains("SASL")) {
+        props.put(SaslConfigs.SASL_KERBEROS_SERVICE_NAME, saslKerberosServiceName);
+        System.setProperty("java.security.auth.login.config", clientJaasConfPath);
+      }
+
+      System.setProperty("java.security.krb5.conf", kerb5ConfPath);
+      props.put(SaslConfigs.SASL_MECHANISM, saslMechanism);
+      props.put(SaslConfigs.SASL_JAAS_CONFIG, clientJaasConf);
+      props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, maxBlockMs);
+      props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
+      props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
+      this.producer = new KafkaProducer<>(props, new StringSerializer(), new StringSerializer());
     } catch (Exception e) {
       // 如何任何阶段发生了异常,主动关闭所有IO资源.
       closeIo();
@@ -338,32 +334,19 @@ public class FileHandlerV2 extends AbstractHandler {
     }
   }
 
-  /**
-   * This is a method description.
-   *
-   * <p>Another description after blank line.
-   *
-   * @author admin
-   */
   public void closeIo() {
     writeLock.lock();
     try {
-      // 尝试关闭buffered writer流.
-      if (bufferedWriter != null) {
-        bufferedWriter.write("");
-        bufferedWriter.flush();
-        bufferedWriter.close();
-        bufferedWriter = null;
+      // 尝试关闭producer.
+      if (producer != null) {
+        producer.close();
       }
-    } catch (Exception e) {
-      //
-      throw new StudyJuliRuntimeException(e);
     } finally {
       writeLock.unlock();
     }
   }
 
-  public FileQueue getFileQueue() {
-    return fileQueue;
+  public KafkaQueue getKafkaQueue() {
+    return kafkaQueue;
   }
 }

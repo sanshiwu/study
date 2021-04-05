@@ -1,7 +1,11 @@
 package org.study.juli.logging.formatter;
 
 import java.text.MessageFormat;
+import java.util.Map;
+import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.LogRecord;
+import org.study.juli.logging.manager.AbstractLogManager;
+import org.study.juli.logging.manager.ClassLoaderLogInfo;
 
 /**
  * This is a class description.
@@ -42,5 +46,21 @@ public abstract class AbstractMessageFormatter implements Formatter {
       }
     }
     return message;
+  }
+
+  /**
+   * 一亿次调用大概2.5秒.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
+  protected static boolean checkUnique() {
+    AbstractLogManager manager = AbstractLogManager.getLogManager();
+    Map<ClassLoader, ClassLoaderLogInfo> classLoaderLoggers = manager.classLoaderLoggers;
+    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    ClassLoaderLogInfo classLoaderLogInfo = classLoaderLoggers.get(classLoader);
+    final String unique = classLoaderLogInfo.props.getProperty(Constants.UNIQUE, Constants.FALSE);
+    return Boolean.parseBoolean(unique);
   }
 }

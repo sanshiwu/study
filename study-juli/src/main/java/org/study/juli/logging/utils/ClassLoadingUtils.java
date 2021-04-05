@@ -33,7 +33,7 @@ public final class ClassLoadingUtils {
    * @author admin
    */
   public static Constructor<?> constructor(String className) throws Exception {
-    ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+    ClassLoader systemClassLoader = Thread.currentThread().getContextClassLoader();
     Class<?> classObj = systemClassLoader.loadClass(className);
     return classObj.getConstructor();
   }

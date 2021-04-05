@@ -42,6 +42,8 @@ public class ConsoleHandler extends AbstractHandler {
   public void publish(LogRecord record) {
     // 记录当前处理器最后一次处理日志的时间.
     sys = System.currentTimeMillis();
+    GLOBAL_COUNTER.incrementAndGet();
+    counter.incrementAndGet();
     // 得到当前处理器的日志级别.
     Level level = this.getLevel();
     // 处理器可以处理日志的级别.

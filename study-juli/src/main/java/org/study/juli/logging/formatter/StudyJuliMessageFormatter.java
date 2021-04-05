@@ -3,10 +3,13 @@ package org.study.juli.logging.formatter;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.manager.AbstractLogManager;
+import org.study.juli.logging.utils.LogManagerUtils;
 
 /**
  * 日志文本行格式化,扩展JDK提供的简单格式化.
@@ -92,13 +95,41 @@ public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
     sb.append(' ');
     // 日志由哪个类打印的.
     sb.append(record.getSourceClassName());
-    sb.append('.');
+    sb.append(' ');
     // 日志由哪个方法打印的.
     sb.append(record.getSourceMethodName());
     sb.append(' ');
-    // 日志unique id.
-    sb.append(record.getUniqueId());
+    // 日志方法行.
+    sb.append(record.getLineNumber());
     sb.append(' ');
+    final String unique = LogManagerUtils.getProperty(Constants.UNIQUE, Constants.FALSE);
+    if (unique.equals(Constants.TRUE)) {
+      // 日志unique id.
+      sb.append(record.getUniqueId());
+      sb.append(' ');
+    }
+    // 日志序列号.
+    sb.append(record.getSerialNumber());
+    sb.append(' ');
+    String host = record.getHost();
+    if (Objects.nonNull(host)) {
+      // 日志进程host.
+      sb.append(host);
+      sb.append(' ');
+    }
+    String port = record.getPort();
+    if (Objects.nonNull(port)) {
+      // 日志进程port.
+      sb.append(port);
+      sb.append(' ');
+    }
+    // 日志自定义字段.
+    Map<String, String> customs = record.getCustoms();
+    for (Entry<String, String> entry : customs.entrySet()) {
+      String value = entry.getValue();
+      sb.append(value);
+      sb.append(' ');
+    }
     // 已经格式化后的日志消息.
     sb.append(message);
     // 如果有异常堆栈信息,则打印出来.

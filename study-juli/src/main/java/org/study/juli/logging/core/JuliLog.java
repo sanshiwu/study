@@ -1,13 +1,14 @@
-package org.study.juli.logging.spi;
+package org.study.juli.logging.core;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 import org.study.juli.logging.base.Constants;
-import org.study.juli.logging.core.LogRecord;
-import org.study.juli.logging.logger.JuliLogger;
 import org.study.juli.logging.formatter.StudyJuliMessageHandler;
 import org.study.juli.logging.handler.Handler;
-import org.study.juli.logging.core.Level;
+import org.study.juli.logging.logger.JuliLogger;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.thread.StudyThread;
+import org.study.juli.logging.utils.LogManagerUtils;
 
 /**
  * Juli日志的核心API,提供所有日志级别的方法,由LogFactory动态创建.
@@ -17,6 +18,8 @@ import org.study.juli.logging.thread.StudyThread;
  * @author admin
  */
 public class JuliLog implements Log {
+  /** 全局日志计数. */
+  private static final AtomicLong GLOBAL_COUNTER = new AtomicLong(0L);
   /** 一个Logger对象对应一个Logging对象. */
   private final JuliLogger logger;
   /** 方法的当前堆栈元素,采用全局变量的原因是同一个对象,方法调用栈都是相同的,不用每次方法都调用一次(否则性能下降很多). */
@@ -55,6 +58,7 @@ public class JuliLog implements Log {
    * @author admin
    */
   private void log(final Level level, final String message, final Throwable throwable) {
+    LogRecord lr = new LogRecord(level, message);
     // 一个Logging实例初始化一次. 因为调用栈都是一样的,直接获取某个元素即可.
     if (stackTraceElement == null) {
       // 当前方法的异常.
@@ -64,24 +68,36 @@ public class JuliLog implements Log {
       // 当前方法的调用栈深度是4. 因此获取第三个元素即可拿到调用者类.
       stackTraceElement = stackTraceElements[Constants.STACK_TRACE_ELEMENT];
     }
+    // 设置异常栈.
+    lr.setThrown(throwable);
     // 获取当前方法调用者的类全路径.
     String className = logger.getName();
     // 获取当前方法调用者的类方法.
     String classMethod = stackTraceElement.getMethodName();
-    // 获取当前线程.
-    Thread thread = Thread.currentThread();
-    String unique = null;
-    // 如果不是StudyThread,无法处理唯一日志消息ID.
-    if (thread instanceof StudyThread) {
-      StudyThread studyThread = (StudyThread) thread;
-      // 获取线程当前的唯一消息ID.
-      unique = studyThread.getUnique();
-    }
-    LogRecord lr = new LogRecord(level, message);
+    // 设置日志调用的源类路径和方法.
     lr.setSourceClassName(className);
     lr.setSourceMethodName(classMethod);
-    lr.setThrown(throwable);
-    lr.setUniqueId(unique);
+    // 设置行号.
+    int lineNumber = stackTraceElement.getLineNumber();
+    lr.setLineNumber(lineNumber);
+    // 查看是否使用唯一序列号ID.
+    String unique = LogManagerUtils.getProperty(Constants.UNIQUE, Constants.FALSE);
+    if (unique.equals(Constants.TRUE)) {
+      // 获取当前线程.
+      Thread thread = Thread.currentThread();
+      // 如果不是StudyThread,无法处理唯一日志消息ID.
+      if (thread instanceof StudyThread) {
+        StudyThread studyThread = (StudyThread) thread;
+        // 为每条日志设置一个唯一的ID.
+        lr.setUniqueId(studyThread.getUnique());
+      }
+    }
+    // 为每条日志设置一个自增长的序列号.
+    long globalCounter = GLOBAL_COUNTER.incrementAndGet();
+    lr.setSerialNumber(globalCounter);
+    // 当前进程的ip和port.
+    lr.setHost(LogManagerUtils.getProperty(".host", null));
+    lr.setPort(LogManagerUtils.getProperty(".port", null));
     logger.logp(lr);
   }
 

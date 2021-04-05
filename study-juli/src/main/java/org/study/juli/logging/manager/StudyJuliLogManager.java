@@ -276,13 +276,10 @@ public final class StudyJuliLogManager extends AbstractLogManager {
     final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     final ClassLoaderLogInfo info = new ClassLoaderLogInfo();
     classLoaderLoggers.put(classLoader, info);
-    // 如果配置为空,直接异常处理.
+    // 如果配置为空,配置默认的日志级别和处理器.
     if (configFileStr == null) {
-      info.props.setProperty(Constants.LEVEL, "ALL");
-      info.props.setProperty(
-          ".handlers",
-          "org.study.juli.logging.handler.FileHandler,"
-              + "org.study.juli.logging.handler.ConsoleHandler");
+      info.props.setProperty(Constants.LEVEL, Constants.DEFAULT_LEVEL);
+      info.props.setProperty(Constants.HANDLERS, Constants.DEFAULT_HANDLERS_SINGLE);
     } else {
       final Path target = new File(configFileStr).toPath();
       // 读取日志Properties文件,然后关闭IO,try(){}语法会自动关闭.
@@ -294,11 +291,6 @@ public final class StudyJuliLogManager extends AbstractLogManager {
       } finally {
         configurationLock.unlock();
       }
-    }
-    // 如果是系统类加载器.
-    if (classLoader != ClassLoader.getSystemClassLoader()) {
-      // 自定义类加载器不支持.
-      throw new StudyJuliRuntimeException("不支持自定义类加载器加载.");
     }
     // 设置全局的日志级别.
     final String level = info.props.getProperty(Constants.LEVEL);

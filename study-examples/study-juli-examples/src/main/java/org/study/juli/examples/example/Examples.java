@@ -6,13 +6,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
 import org.study.juli.logging.context.WorkerContext;
 import org.study.juli.logging.context.WorkerStudyContextImpl;
 import org.study.juli.logging.monitor.Monitor;
 import org.study.juli.logging.monitor.ThreadMonitor;
 import org.study.juli.logging.pressure.policy.StudyRejectedPolicy;
+import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.thread.StudyThreadFactory;
 
 /**
@@ -23,11 +23,11 @@ import org.study.juli.logging.thread.StudyThreadFactory;
  * @author admin
  */
 public class Examples {
-  //private static final Log log = LogFactory.getLog(Examples.class);
+  private static final Log log = LogFactory.getLog(Examples.class);
   /** 线程阻塞的最大时间时10秒.如果不超过15秒,打印warn.如果超过15秒打印异常堆栈. */
-  protected static final Monitor CHECKER = new ThreadMonitor(15000L);
+  private static final Monitor CHECKER = new ThreadMonitor(15000L);
   /** 线程池. CallerRunsPolicy 策略是一种背压机制.会使用主线程运行任务,但是使用这个策略,会导致主线程状态改变. */
-  protected static final ExecutorService LOG_BUSINESS =
+  private static final ExecutorService LOG_BUSINESS =
       new ThreadPoolExecutor(
           3,
           3,
@@ -37,16 +37,17 @@ public class Examples {
           new StudyThreadFactory("log-business", CHECKER),
           new StudyRejectedPolicy());
   /** 服务器端的定时调度线程池. */
-  protected static final ScheduledExecutorService STUDY_BUSINESS_SCHEDULED_EXECUTOR_SERVICE =
+  private static final ScheduledExecutorService STUDY_BUSINESS_SCHEDULED_EXECUTOR_SERVICE =
       new ScheduledThreadPoolExecutor(1, new StudyThreadFactory("study_business_scheduled", null));
   /** 工作任务上下文. */
-  protected static final WorkerContext LOG_BUSINESS_CONTEXT =
+  private static final WorkerContext LOG_BUSINESS_CONTEXT =
       new WorkerStudyContextImpl(LOG_BUSINESS, STUDY_BUSINESS_SCHEDULED_EXECUTOR_SERVICE);
 
   public static void main(String[] args) {
     long s = System.currentTimeMillis();
     ExamplesWorker examplesWorker = new ExamplesWorker();
-    for (int i = 0; i < 100; i++) {
+    // 1000个任务,会生成35W条日志.
+    for (int i = 0; i < 1000; i++) {
       LOG_BUSINESS_CONTEXT.executeInExecutorService(i, examplesWorker);
     }
     long e1 = System.currentTimeMillis();

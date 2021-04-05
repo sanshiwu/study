@@ -1,6 +1,8 @@
 package org.study.juli.logging.core;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This is a method description.
@@ -21,6 +23,11 @@ public class LogRecord {
   private Instant instant;
   private Object[] parameters = new Object[0];
   private String uniqueId;
+  private long serialNumber;
+  private int lineNumber;
+  private String host;
+  private String port;
+  private Map<String, String> customs = new LinkedHashMap<>(16);
 
   public LogRecord(Level level, String msg) {
     this.level = level;
@@ -114,5 +121,45 @@ public class LogRecord {
 
   public void setLevel(Level level) {
     this.level = level;
+  }
+
+  public long getSerialNumber() {
+    return serialNumber;
+  }
+
+  public void setSerialNumber(long serialNumber) {
+    this.serialNumber = serialNumber;
+  }
+
+  public Map<String, String> getCustoms() {
+    return customs;
+  }
+
+  public void setCustom(String key, String value) {
+    customs.put(key, value);
+  }
+
+  public int getLineNumber() {
+    return lineNumber;
+  }
+
+  public void setLineNumber(int lineNumber) {
+    this.lineNumber = lineNumber;
+  }
+
+  public String getHost() {
+    return host;
+  }
+
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  public String getPort() {
+    return port;
+  }
+
+  public void setPort(String port) {
+    this.port = port;
   }
 }

@@ -4,8 +4,8 @@ import java.lang.reflect.Constructor;
 import java.nio.file.FileSystems;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import org.study.juli.logging.core.JuliLog;
 import org.study.juli.logging.exception.StudyJuliConfigException;
-import org.study.juli.logging.spi.JuliLog;
 import org.study.juli.logging.spi.Log;
 
 /**
@@ -73,11 +73,10 @@ public final class LogFactory implements Factory {
     // 是否读取到了SPI配置项.
     if (logLoader.iterator().hasNext()) {
       // 得到对象的Class对象.获取第一条配置项,如果为空则创建一个Logging对象.
-      Optional<Log> first = logLoader.findFirst();
-      Class<? extends Log> logClass = null;
+      final Optional<Log> first = logLoader.findFirst();
       if (first.isPresent()) {
-        Log log = first.get();
-        logClass = log.getClass();
+        final Log log = first.get();
+        final Class<? extends Log> logClass = log.getClass();
         // 创建构造函数对象.
         spiConstructor = logClass.getConstructor(String.class);
       }
@@ -85,7 +84,7 @@ public final class LogFactory implements Factory {
       // 如果没有发现配置项. 则创建一个默认的Logging对象.
       spiConstructor = JuliLog.class.getConstructor(String.class);
       // 构造内部的配置异常消息.
-      StudyJuliConfigException exception =
+      final StudyJuliConfigException exception =
           new StudyJuliConfigException(Constants.JULI_CONFIG_EXCEPTION_MESSAGE);
       // 主动打印出异常栈,java:S1148 规则弃用,可以使用.
       exception.printStackTrace();
