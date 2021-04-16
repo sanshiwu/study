@@ -14,11 +14,11 @@ import org.study.juli.logging.utils.LogManagerUtils;
 /**
  * 日志文本行格式化,扩展JDK提供的简单格式化.
  *
- * <p>Another description after blank line.
+ * <p>按行输出纯文本的消息.
  *
  * @author admin
  */
-public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
+public class StudyJuliMessageTextFormatter extends AbstractMessageFormatter {
   /** . */
   private final DateTimeFormatter pattern;
 
@@ -29,12 +29,12 @@ public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
    *
    * @author admin
    */
-  public StudyJuliMessageFormatter() {
+  public StudyJuliMessageTextFormatter() {
     // 获取当前处理器配置的格式化.
     String timeFormat =
         AbstractLogManager.getLogManager()
             .getProperty(
-                StudyJuliMessageFormatter.class.getName() + Constants.DATETIME_FORMAT_NAME);
+                StudyJuliMessageTextFormatter.class.getName() + Constants.DATETIME_FORMAT_NAME);
     // 如果为空.
     if (Objects.isNull(timeFormat)) {
       // 使用默认的格式化.
@@ -52,7 +52,7 @@ public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
    * @param timeFormat 日期格式化.
    * @author admin
    */
-  public StudyJuliMessageFormatter(final String timeFormat) {
+  public StudyJuliMessageTextFormatter(final String timeFormat) {
     // 如果为空.
     if (Objects.isNull(timeFormat)) {
       // 使用默认的格式化.
@@ -86,7 +86,7 @@ public class StudyJuliMessageFormatter extends AbstractMessageFormatter {
     sb.append(format);
     sb.append(' ');
     // 日志级别.
-    sb.append(record.getLevel().getLocalizedName());
+    sb.append(record.getLevel().getName());
     sb.append(' ');
     sb.append('[');
     // 当前执行的线程名.
