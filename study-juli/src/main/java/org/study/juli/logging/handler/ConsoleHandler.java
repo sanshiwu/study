@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
+import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.Level;
 import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.exception.StudyJuliRuntimeException;
@@ -100,7 +101,7 @@ public class ConsoleHandler extends AbstractHandler {
     setFilter((Filter) filterConstructor.newInstance());
     // 获取日志格式化器.
     String formatterName =
-        getProperty(".formatter", "org.study.juli.logging.formatter.StudyJuliMessageFormatter");
+        getProperty(".formatter", Constants.FORMATTER);
     // 设置日志格式化器.
     Constructor<?> formatterConstructor = ClassLoadingUtils.constructor(formatterName);
     setFormatter((Formatter) formatterConstructor.newInstance());

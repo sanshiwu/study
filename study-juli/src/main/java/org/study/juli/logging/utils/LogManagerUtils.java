@@ -13,7 +13,11 @@ import org.study.juli.logging.manager.ClassLoaderLogInfo;
  * @version 2021-04-05 09:19
  * @since 2021-04-05 09:19:00
  */
-public class LogManagerUtils {
+public final class LogManagerUtils {
+
+  private LogManagerUtils() {
+    //
+  }
 
   public static String getProperty(String key, String value) {
     // 获取全局的日志管理器.

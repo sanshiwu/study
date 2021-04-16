@@ -43,7 +43,7 @@ For example, Handler condition,Custom filter.
 
 * Other features coming soon...
 
-. Unique message id in same thread.
+. Unique message id in same thread (Automatic generation or parameter).
 
 . Back pressure control based on high and low water mark.
 

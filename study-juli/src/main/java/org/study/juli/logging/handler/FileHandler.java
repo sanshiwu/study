@@ -12,6 +12,8 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.Level;
 import org.study.juli.logging.core.LogRecord;
@@ -19,9 +21,10 @@ import org.study.juli.logging.exception.StudyJuliRuntimeException;
 import org.study.juli.logging.filter.Filter;
 import org.study.juli.logging.formatter.Formatter;
 import org.study.juli.logging.queue.FileQueue;
-import org.study.juli.logging.queue.StudyHandler;
+import org.study.juli.logging.strategy.DeleteStrategy;
+import org.study.juli.logging.strategy.GzipCompressStrategy;
+import org.study.juli.logging.strategy.StrategyFileFilter;
 import org.study.juli.logging.utils.ClassLoadingUtils;
-import org.study.juli.logging.worker.ProducerNoticeConsumerWorker;
 
 /**
  * This is a method description.
@@ -32,13 +35,16 @@ import org.study.juli.logging.worker.ProducerNoticeConsumerWorker;
  */
 @SuppressWarnings({"java:S2093"})
 public class FileHandler extends AbstractHandler {
-  /** 生产通知消费处理器.为Handler自己的队列创建一个生产者通知消费者处理程序. */
-  private final StudyHandler<Handler> producerNoticeConsumerWorker =
-      new ProducerNoticeConsumerWorker();
   /** . */
-  private final Runnable consumerRunnable = createConsumerRunnable();
+  private final Runnable consumerRunnable = new ConsumerRunnable();
   /** . */
-  private FileQueue fileQueue;
+  private final GzipCompressStrategy gzipCompressStrategy = new GzipCompressStrategy();
+  /** . */
+  private final DeleteStrategy deleteStrategy = new DeleteStrategy();
+  /** . */
+  private final LinkedHashMap<String, File> logFiles = new LinkedHashMap<>(16);
+  /** . */
+  private final FileQueue fileQueue;
   /** . */
   private String suffix;
   /** . */
@@ -55,8 +61,8 @@ public class FileHandler extends AbstractHandler {
   private OutputStreamWriter streamWriter;
   /** . */
   private File logFilePath;
-  /** 生产日志处理器. */
-  protected StudyHandler<LogRecord> producerWorker;
+  /** . */
+  private File logAbsolutePath;
 
   /**
    * This is a method description.
@@ -115,6 +121,8 @@ public class FileHandler extends AbstractHandler {
             logFilePath = getFile();
             // 重新打开新的的文件流.
             open();
+            // 执行策略.
+            strategy();
           }
         } finally {
           // 加一个读锁.
@@ -132,6 +140,33 @@ public class FileHandler extends AbstractHandler {
   }
 
   /**
+   * 进行文件切换的瞬间,必须进行背压控制,否则内存溢出.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
+  private void strategy() {
+    // 获取要压缩和删除的文件.
+    int size = logFiles.size();
+    if (size > Constants.LOOP_COUNT) {
+      for (int i = 0; i < size - Constants.LOOP_COUNT; i++) {
+        Entry<String, File> next = logFiles.entrySet().iterator().next();
+        String key = next.getKey();
+        File source = logFiles.get(key);
+        String path = source.getAbsolutePath();
+        File destination = new File(path + ".gz");
+        // 执行压缩.
+        gzipCompressStrategy.execute(source, destination, 1);
+        // 执行删除.
+        deleteStrategy.delete(source);
+        // 删除条目.
+        logFiles.remove(key);
+      }
+    }
+  }
+
+  /**
    * JDK会调用这个方法.
    *
    * <p>Another description after blank line.
@@ -142,7 +177,9 @@ public class FileHandler extends AbstractHandler {
   public void publish(final LogRecord record) {
     // 记录当前处理器最后一次处理日志的时间.
     sys = System.currentTimeMillis();
+    // 全局处理器日志消息数量.
     GLOBAL_COUNTER.incrementAndGet();
+    // 单个处理器日志消息数量.
     counter.incrementAndGet();
     // 得到当前处理器的日志级别.
     Level level = this.getLevel();
@@ -218,47 +255,49 @@ public class FileHandler extends AbstractHandler {
     // 设置日志文件的级别.
     setLevel(Level.findLevel(getProperty(".level", "" + Level.ALL)));
     // 设置日志文件的过滤器.
-    String filterName = getProperty(".filter", "org.study.juli.logging.filter.StudyJuliFilter");
+    String filterName = getProperty(".filter", Constants.FILTER);
     // 设置过滤器.
     Constructor<?> filterConstructor = ClassLoadingUtils.constructor(filterName);
     setFilter((Filter) filterConstructor.newInstance());
     // 获取日志格式化器.
-    String formatterName =
-        getProperty(".formatter", "org.study.juli.logging.formatter.StudyJuliMessageFormatter");
+    String formatterName = getProperty(".formatter", Constants.FORMATTER);
     // 设置日志格式化器.
     Constructor<?> formatterConstructor = ClassLoadingUtils.constructor(formatterName);
     setFormatter((Formatter) formatterConstructor.newInstance());
     // 设置日志格式化器.
     formatter = getFormatter();
+    // 日志子目录.
+    logAbsolutePath = getDirectory();
     // 日志的文件对象.
     logFilePath = getFile();
   }
 
-  private File getFile() {
-    File dir = new File(this.directory);
-    // 定位到日志绝对路径.
-    File logAbsoluteFile = dir.getAbsoluteFile();
-    if (!logAbsoluteFile.exists()) {
-      boolean make = logAbsoluteFile.mkdirs();
+  private File getDirectory() {
+    File path = new File(this.directory + File.separator + this.prefix);
+    if (!path.exists()) {
+      boolean make = path.mkdirs();
       if (!make) {
         throw new StudyJuliRuntimeException("目录创建异常.");
       }
     }
+    if (path.isDirectory()) {
+      File[] files = path.listFiles(new StrategyFileFilter());
+      if (files != null) {
+        for (File file : files) {
+          logFiles.putIfAbsent(file.getName(), file);
+        }
+      }
+    }
+    return path;
+  }
+
+  private File getFile() {
     // 日志文件名.
     String logFileName = this.prefix + (this.rotatable ? this.initialization : "") + this.suffix;
     // 得到日志的完整路径.
-    return new File(logAbsoluteFile, logFileName);
-  }
-
-  /**
-   * 创建一个消费者线程任务.
-   *
-   * <p>Another description after blank line.
-   *
-   * @author admin
-   */
-  public ConsumerRunnable createConsumerRunnable() {
-    return new ConsumerRunnable();
+    File file = new File(logAbsolutePath, logFileName);
+    logFiles.putIfAbsent(logFileName, file);
+    return file;
   }
 
   /**

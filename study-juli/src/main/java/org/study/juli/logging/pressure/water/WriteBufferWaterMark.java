@@ -10,9 +10,19 @@ import org.study.juli.logging.base.Constants;
  * @author admin
  */
 public class WriteBufferWaterMark {
+  private static final int DEFAULT_LOW_WATER_MARK = 32 * 1024;
+  private static final int DEFAULT_HIGH_WATER_MARK = 64 * 1024;
+  private static final int DEFAULT_TYPE = 1;
+
   private final int low;
   private final int high;
   private final int type;
+
+  public WriteBufferWaterMark() {
+    this.low = DEFAULT_LOW_WATER_MARK;
+    this.high = DEFAULT_HIGH_WATER_MARK;
+    this.type = DEFAULT_TYPE;
+  }
 
   public WriteBufferWaterMark(int low, int high, int type) {
     this.low = low;

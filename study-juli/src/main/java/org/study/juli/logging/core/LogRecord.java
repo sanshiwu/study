@@ -3,6 +3,7 @@ package org.study.juli.logging.core;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.study.juli.logging.base.Constants;
 
 /**
  * This is a method description.
@@ -27,7 +28,7 @@ public class LogRecord {
   private int lineNumber;
   private String host;
   private String port;
-  private Map<String, String> customs = new LinkedHashMap<>(16);
+  private final Map<String, String> customs = new LinkedHashMap<>(Constants.MAP_CAPACITY);
 
   public LogRecord(Level level, String msg) {
     this.level = level;

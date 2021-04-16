@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.context.WorkerContext;
 import org.study.juli.logging.context.WorkerStudyContextImpl;
 import org.study.juli.logging.core.Level;
@@ -24,7 +23,9 @@ import org.study.juli.logging.monitor.GuardianConsumerMonitor;
 import org.study.juli.logging.monitor.Monitor;
 import org.study.juli.logging.monitor.ThreadMonitor;
 import org.study.juli.logging.pressure.policy.StudyRejectedPolicy;
+import org.study.juli.logging.queue.StudyHandler;
 import org.study.juli.logging.thread.StudyThreadFactory;
+import org.study.juli.logging.worker.ProducerNoticeConsumerWorker;
 
 /**
  * This is a class description.
@@ -101,8 +102,10 @@ public abstract class AbstractHandler implements Handler {
   protected static final AtomicLong GLOBAL_COUNTER = new AtomicLong(0L);
   /** 单个handler日志计数. */
   protected final AtomicLong counter = new AtomicLong(0L);
-  /** 单个日志文件最大条数. */
-  protected final int limit = Constants.LIMIT;
+
+  /** 生产通知消费处理器.为Handler自己的队列创建一个生产者通知消费者处理程序. */
+  protected final StudyHandler<Handler> producerNoticeConsumerWorker =
+      new ProducerNoticeConsumerWorker();
 
   static {
     // 线程监控任务.
@@ -135,6 +138,9 @@ public abstract class AbstractHandler implements Handler {
   protected Formatter formatter;
   protected Level logLevel = Level.ALL;
   protected String encoding;
+
+  /** 生产日志处理器. */
+  protected StudyHandler<LogRecord> producerWorker;
 
   /**
    * 关闭资源方法,一般处理优雅关闭应用程序时调用.

@@ -50,4 +50,35 @@ public interface StudyContext {
    * @author admin
    */
   void endDispatch();
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param unique .
+   * @param handler .
+   * @param event .
+   * @param <T> .
+   * @author admin
+   */
+  <T> void dispatchV2(final String unique, final T event, final StudyHandler<T> handler);
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
+  void beginDispatchV2(final String unique);
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
+  void endDispatchV2();
 }

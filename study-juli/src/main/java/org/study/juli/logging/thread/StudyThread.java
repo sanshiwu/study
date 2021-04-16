@@ -99,8 +99,26 @@ public final class StudyThread extends Thread {
     return context;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   public String getUnique() {
     return unique;
+  }
+
+  /**
+   * 动态设置唯一日志消息ID.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
+  public void setUnique(String unique) {
+    this.unique = unique;
   }
 
   /**
@@ -155,5 +173,59 @@ public final class StudyThread extends Thread {
     context = null;
     // 设置执行结束时间.
     executeEnd();
+  }
+
+  /**
+   * 当线程开始时,开始时间设置成当前系统的时间戳毫秒数.
+   *
+   * @author admin
+   */
+  private void executeStartV2(final String unique) {
+    // 如果当前上下文为空.
+    if (context == null) {
+      // 设置当前系统时间为开始时间,代表线程开始执行.
+      execStart = System.currentTimeMillis();
+      // 设置线程开始运行时的唯一ID
+      this.unique = unique;
+    }
+  }
+
+  private void executeEndV2() {
+    // 如果当前上下文为空.
+    if (context == null) {
+      // 设置当前系统时间为0,代表线程执行完毕.
+      execStart = 0;
+      // 设置线程结束运行时的唯一ID
+      unique = null;
+    }
+  }
+
+  /**
+   * 给线程设置一个上下文环境对象.
+   *
+   * <p>代表线程正在运行着.
+   *
+   * @param contextParam 上下文对象.
+   * @author admin
+   */
+  public void beginEmissionV2(final String unique,final StudyContext contextParam) {
+    // 设置执行开始时间.
+    executeStartV2(unique);
+    // 设置上下文.
+    this.context = contextParam;
+  }
+
+  /**
+   * 将线程上下文环境对象设置为空.
+   *
+   * <p>代表线程运行完毕.
+   *
+   * @author admin
+   */
+  public void endEmissionV2() {
+    // 设置当前上下文为空.
+    context = null;
+    // 设置执行结束时间.
+    executeEndV2();
   }
 }

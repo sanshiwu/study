@@ -20,7 +20,7 @@ public abstract class AbstractQueue<T> implements StudyQueue<T> {
   protected String target;
   /** 双端链表阻塞队列,可以头尾操作. */
   protected LinkedBlockingDeque<T> queue;
-  /** 队列初始容量默认1000000(Integer.MAX_VALUE,本打算无限制的),否则很容易丢失数据,因为向队列插入元素时,如果队列满了,会把最先放入的元素删除. */
+  /** 队列初始容量默认5000. */
   private int capacity = Constants.CAPACITY;
 
   /**

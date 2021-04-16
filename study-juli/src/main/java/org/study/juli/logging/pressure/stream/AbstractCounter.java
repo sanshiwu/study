@@ -24,8 +24,7 @@ public abstract class AbstractCounter implements Counter {
   protected long lastReadingTime;
   protected final AtomicLong realWrittenBytes = new AtomicLong();
   protected long realWriteThroughput;
-  protected final AtomicLong checkInterval =
-      new AtomicLong(AbstractTrafficShaping.DEFAULT_CHECK_INTERVAL);
+  protected final AtomicLong checkInterval = new AtomicLong(1000L);
   protected String name;
   protected AbstractTrafficShaping trafficShapingHandler;
   protected ScheduledExecutorService executor;

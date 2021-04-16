@@ -13,7 +13,7 @@ import org.study.juli.logging.manager.AbstractLogManager;
 /**
  * 日志文本行Json格式化,扩展JDK提供的简单格式化.
  *
- * <p>Another description after blank line.
+ * <p>按行输出纯json格式的消息.
  *
  * @author admin
  */
@@ -33,7 +33,7 @@ public class StudyJuliMessageJsonFormatter extends AbstractMessageFormatter {
     String timeFormat =
         AbstractLogManager.getLogManager()
             .getProperty(
-                StudyJuliMessageFormatter.class.getName() + Constants.DATETIME_FORMAT_NAME);
+                StudyJuliMessageJsonFormatter.class.getName() + Constants.DATETIME_FORMAT_NAME);
     // 如果为空.
     if (Objects.isNull(timeFormat)) {
       // 使用默认的格式化.
@@ -85,7 +85,7 @@ public class StudyJuliMessageJsonFormatter extends AbstractMessageFormatter {
     sb.append(this.inQuotes(format));
     sb.append(",");
     sb.append(this.inQuotes("level") + ": ");
-    sb.append(this.inQuotes(record.getLevel().getLocalizedName()));
+    sb.append(this.inQuotes(record.getLevel().getName()));
     sb.append(",");
     sb.append(this.inQuotes("thread") + ": ");
     sb.append(this.inQuotes(Thread.currentThread().getName()));

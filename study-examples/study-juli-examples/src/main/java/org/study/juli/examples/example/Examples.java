@@ -1,5 +1,6 @@
 package org.study.juli.examples.example;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,7 +49,9 @@ public class Examples {
     ExamplesWorker examplesWorker = new ExamplesWorker();
     // 1000个任务,会生成35W条日志.
     for (int i = 0; i < 1000; i++) {
-      LOG_BUSINESS_CONTEXT.executeInExecutorService(i, examplesWorker);
+      // 参数传递一个唯一消息ID.子线程也可以利用这个唯一消息ID.
+      LOG_BUSINESS_CONTEXT.executeInExecutorServiceV2(
+          UUID.randomUUID().toString(), i, examplesWorker);
     }
     long e1 = System.currentTimeMillis();
     System.out.println("消耗的时间:" + (e1 - s) / 1000 + "秒");

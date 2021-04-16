@@ -31,24 +31,23 @@ grant {
 // 对某目录下以及子路目下的代码赋予权限,其他目录无任何权限.
 grant codeBase "file:${study.home}${/}-" {
         //属性全限需要赋值给入口的程序.
-        permission java.util.PropertyPermission "java.util.logging.config.file", "read";
-        //日志的控制全限需要赋值给所有代码.
-        permission java.util.logging.LoggingPermission "control";
+        permission java.util.PropertyPermission "*", "read";
         //根目录下的文件和文件夹的读取全限赋给所有根目录下代码.
-        permission java.io.FilePermission  "${study.home}${/}-", "read";
+        permission java.io.FilePermission "${study.home}${/}-", "read";
 };
 
 //单独为某个代码块赋值全限.
 grant codeBase "file:${study.home}${/}-" {
-        permission java.util.PropertyPermission "user.dir", "read";
-        permission  java.util.PropertyPermission "java.util.logging.ConsoleHandler.formatter", "read";
+        // 为日志目录配置写全限.
         permission java.io.FilePermission "logs", "write";
         permission java.io.FilePermission "logs1", "write";
         permission java.io.FilePermission "logs2", "write";
+        permission java.io.FilePermission "logs5", "write";
         permission java.io.FilePermission "logs${/}*", "write";
         permission java.io.FilePermission "logs1${/}*", "write";
         permission java.io.FilePermission "logs2${/}*", "write";
-        permission java.lang.RuntimePermission "shutdownHooks";
+        permission java.io.FilePermission "logs5${/}*", "write";
+        // 配置classLoader设置和获取全限.
         permission java.lang.RuntimePermission "setContextClassLoader";
         permission java.lang.RuntimePermission "getClassLoader";
 };
@@ -74,24 +73,23 @@ grant codeBase "file:${study.home}${/}-" {
 // 给根目录下的所有代码赋全限.
 //grant codeBase "file:${study.home}${/}-" {
         //属性全限需要赋值给入口的程序.
-//        permission java.util.PropertyPermission "java.util.logging.config.file", "read";
-        //日志的控制全限需要赋值给所有代码.
-//        permission java.util.logging.LoggingPermission "control";
+//        permission java.util.PropertyPermission "*", "read";
         //根目录下的文件和文件夹的读取全限赋给所有根目录下代码.
 //        permission java.io.FilePermission  "${study.home}${/}-", "read";
 //};
 
 //单独为某个代码块赋值全限.
 //grant codeBase "file:${study.home}${/}lib/study-juli-2020.jar" {
-//        permission java.util.PropertyPermission "user.dir", "read";
-//        permission  java.util.PropertyPermission "java.util.logging.ConsoleHandler.formatter", "read";
+//        为日志目录配置写全限.
 //        permission java.io.FilePermission "logs", "write";
 //        permission java.io.FilePermission "logs1", "write";
 //        permission java.io.FilePermission "logs2", "write";
+//        permission java.io.FilePermission "logs5", "write";
 //        permission java.io.FilePermission "logs${/}*", "write";
 //        permission java.io.FilePermission "logs1${/}*", "write";
 //        permission java.io.FilePermission "logs2${/}*", "write";
-//        permission java.lang.RuntimePermission "shutdownHooks";
+//        permission java.io.FilePermission "logs5${/}*", "write";
+//        配置classLoader设置和获取全限.
 //        permission java.lang.RuntimePermission "setContextClassLoader";
 //        permission java.lang.RuntimePermission "getClassLoader";
 //};

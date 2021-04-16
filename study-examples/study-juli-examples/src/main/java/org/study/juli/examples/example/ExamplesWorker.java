@@ -26,18 +26,18 @@ import org.study.juli.logging.queue.StudyHandler;
  */
 public class ExamplesWorker implements StudyHandler<Integer> {
   private static final Log log = LogFactory.getLog(Examples.class);
-  private Examples1 examples2 = new Examples1();
-  private Examples3 examples3 = new Examples3();
-  private Examples4 examples4 = new Examples4();
-  private Test test = new Test();
-  private Examples5 examples5 = new Examples5();
-  private Examples6 examples6 = new Examples6();
-  private Example6 example6 = new Example6();
-  private Test1 test1 = new Test1();
-  private Test2 test2 = new Test2();
-  private Test3 test3 = new Test3();
-  private Test4 test4 = new Test4();
-  private Test5 test5 = new Test5();
+  private final Examples1 examples2 = new Examples1();
+  private final Examples3 examples3 = new Examples3();
+  private final Examples4 examples4 = new Examples4();
+  private final Test test = new Test();
+  private final Examples5 examples5 = new Examples5();
+  private final Examples6 examples6 = new Examples6();
+  private final Example6 example6 = new Example6();
+  private final Test1 test1 = new Test1();
+  private final Test2 test2 = new Test2();
+  private final Test3 test3 = new Test3();
+  private final Test4 test4 = new Test4();
+  private final Test5 test5 = new Test5();
 
   @Override
   public void handle(Integer i) {
@@ -57,7 +57,7 @@ public class ExamplesWorker implements StudyHandler<Integer> {
     examples3.main(i);
     // 输入到日志4study文件.
     examples4.main(i);
-    // 输入到日志2study文件.-
+    // 输入到日志2study文件.
     test.main(i);
     // 输入到日志2study文件.
     examples5.main(i);

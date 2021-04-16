@@ -1,6 +1,5 @@
 package org.study.juli.logging.worker;
 
-import java.util.concurrent.atomic.AtomicLong;
 import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.handler.FileHandler;
 import org.study.juli.logging.handler.FileHandlerV2;

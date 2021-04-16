@@ -3,7 +3,7 @@ package org.study.juli.logging.core;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import org.study.juli.logging.base.Constants;
-import org.study.juli.logging.formatter.StudyJuliMessageHandler;
+import org.study.juli.logging.formatter.StudyJuliMessageFormat;
 import org.study.juli.logging.handler.Handler;
 import org.study.juli.logging.logger.JuliLogger;
 import org.study.juli.logging.spi.Log;
@@ -137,7 +137,7 @@ public class JuliLog implements Log {
       final int lastArrIdx = argsLen - 1;
       final Object lastEntry = args[lastArrIdx];
       final Throwable throwable = lastEntry instanceof Throwable ? (Throwable) lastEntry : null;
-      final String messageFormat = StudyJuliMessageHandler.format(message, args);
+      final String messageFormat = StudyJuliMessageFormat.format(message, args);
       log(level, messageFormat, throwable);
     }
   }

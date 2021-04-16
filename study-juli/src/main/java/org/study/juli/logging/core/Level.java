@@ -57,10 +57,6 @@ public class Level {
     return name;
   }
 
-  public String getLocalizedName() {
-    return this.getName();
-  }
-
   public static Level findLevel(String name) {
     return STANDARD_LEVELS.get(name);
   }

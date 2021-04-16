@@ -70,4 +70,10 @@ public class WorkerStudyContextImpl extends AbstractStudyContext implements Work
   public ScheduledExecutorService getScheduledExecutorService() {
     return scheduledExecutorService;
   }
+
+  @Override
+  public <T> void executeInExecutorServiceV2(String unique, T event, StudyHandler<T> handler) {
+    Runnable task = () -> dispatchV2(unique, event, handler);
+    executorService.submit(task);
+  }
 }

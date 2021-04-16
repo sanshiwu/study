@@ -39,12 +39,15 @@ public class FileQueue extends AbstractQueue<LogRecord> {
    *
    * <p>Another description after blank line.
    *
-   * @return true, 成功放入队列. false,队列满,放入失败
    * @author admin
    */
-  public boolean enqueue(final LogRecord e) {
-    // 使用非阻塞方法将元素插入队列.
-    return queue.offer(e);
+  public void enqueue(final LogRecord e) {
+    try {
+      // 使用阻塞方法将元素插入队列. 天然的背压方式,当队列满后阻塞.
+      queue.put(e);
+    } catch (InterruptedException interruptedException) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   /**
@@ -60,7 +63,7 @@ public class FileQueue extends AbstractQueue<LogRecord> {
   public boolean enqueue(final LogRecord t, final long timeout) {
     boolean isSuccess = false;
     try {
-      // 使用非阻塞方法将元素插入队列.
+      // 使用阻塞方法将元素插入队列.
       isSuccess = queue.offer(t, timeout, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -135,11 +138,7 @@ public class FileQueue extends AbstractQueue<LogRecord> {
      */
     @Override
     public void run() {
-      // 如果队列满了.
-      while (!enqueue(record)) {
-        // 删除最先加入的一个元素.
-        queue.pollFirst();
-      }
+      enqueue(record);
     }
   }
 
@@ -162,11 +161,7 @@ public class FileQueue extends AbstractQueue<LogRecord> {
      */
     @Override
     public void handle(final LogRecord record) {
-      // 如果队列满了.
-      while (!enqueue(record)) {
-        // 删除最先加入的一个元素.
-        queue.pollFirst();
-      }
+      enqueue(record);
     }
   }
 }

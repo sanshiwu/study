@@ -5,10 +5,12 @@ import java.util.regex.Pattern;
 /**
  * 对消息进行处理,增强以后,传递给消息格式化.
  *
+ * <p>用参数替换掉消息中的 "{}" 大括号.
+ *
  * @author admin
  */
-public final class StudyJuliMessageHandler {
-  /** . */
+public final class StudyJuliMessageFormat {
+  /** 采用模式匹配的方式性能更高,相比较字符串切割方法. */
   private static final Pattern COMPILE = Pattern.compile("\\{}");
 
   /**
@@ -18,7 +20,7 @@ public final class StudyJuliMessageHandler {
    *
    * @author admin
    */
-  private StudyJuliMessageHandler() {
+  private StudyJuliMessageFormat() {
     //
   }
 

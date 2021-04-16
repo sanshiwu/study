@@ -29,7 +29,10 @@ public final class Constants {
   public static final String BRACE = "{}";
   /** . */
   public static final String FORMATTER =
-      "org.study.juli.logging.formatter.StudyJuliMessageFormatter";
+      "org.study.juli.logging.formatter.StudyJuliMessageTextFormatter";
+  /** . */
+  public static final String FILTER =
+  "org.study.juli.logging.filter.StudyJuliFilter";
   /** . */
   public static final String FORMATTER_NAME =
       "org.study.juli.logging.handler.ConsoleHandler.formatter";
@@ -68,9 +71,11 @@ public final class Constants {
   /** . */
   public static final int LEN_COUNT = 100;
   /** . */
-  public static final int CAPACITY = 1000000;
+  public static final int CAPACITY = 5000;
   /** . */
   public static final int LIMIT = 200000;
+  /** . */
+  public static final int MAP_CAPACITY = 16;
   /**
    * This is a method description.
    *

@@ -43,4 +43,18 @@ public interface WorkerContext {
    * @author admin
    */
   ScheduledExecutorService getScheduledExecutorService();
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param unique 唯一消息ID.
+   * @param event 处理对象.
+   * @param handler 处理器.
+   * @param <T> 传入handler的元素.
+   * @author admin
+   */
+  <T> void executeInExecutorServiceV2(
+      final String unique, final T event, final StudyHandler<T> handler);
 }

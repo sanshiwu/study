@@ -212,10 +212,6 @@ public class TrafficCounter extends AbstractCounter {
     return name;
   }
 
-  public long readTimeToWait(final long size, final long limitTraffic, final long maxTime) {
-    return readTimeToWait(size, limitTraffic, maxTime, milliSecondFromNano());
-  }
-
   public long readTimeToWait(
       final long size, final long limitTraffic, final long maxTime, final long now) {
     bytesRecvFlowControl(size);
@@ -255,10 +251,6 @@ public class TrafficCounter extends AbstractCounter {
     }
     readingTime = Math.max(localReadingTime, now);
     return 0;
-  }
-
-  public long writeTimeToWait(final long size, final long limitTraffic, final long maxTime) {
-    return writeTimeToWait(size, limitTraffic, maxTime, milliSecondFromNano());
   }
 
   public long writeTimeToWait(

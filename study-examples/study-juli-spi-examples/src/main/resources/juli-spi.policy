@@ -19,4 +19,3 @@ grant codeBase "file:${java.home}/lib/ext/-" {
 grant codeBase "file:${study.home}${/}-" {
         permission java.security.AllPermission;
 };
-
