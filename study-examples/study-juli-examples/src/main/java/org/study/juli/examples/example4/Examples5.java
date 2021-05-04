@@ -1,13 +1,12 @@
 package org.study.juli.examples.example4;
 
-import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
+import org.study.juli.logging.spi.Log;
 
 /**
  * This is a class description.
  *
  * <p>Another description after blank line.
- *
  */
 public class Examples5 {
 

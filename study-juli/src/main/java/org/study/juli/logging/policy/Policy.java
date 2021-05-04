@@ -8,13 +8,27 @@ import java.util.function.BooleanSupplier;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-06 14:19
- * @since 2021-04-06 14:19:00
  */
 public interface Policy extends BooleanSupplier {
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return b.
+   * @author admin
+   */
   boolean isTriggeringEvent();
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return b.
+   * @author admin
+   */
   @Override
   boolean getAsBoolean();
 }

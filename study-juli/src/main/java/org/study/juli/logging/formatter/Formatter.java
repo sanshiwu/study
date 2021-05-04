@@ -17,15 +17,18 @@ public interface Formatter extends BooleanSupplier {
    *
    * <p>Another description after blank line.
    *
+   * @param logRecord .
+   * @return s.
    * @author admin
    */
-  String format(LogRecord record);
+  String format(LogRecord logRecord);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @return s.
    * @author admin
    */
   @Override

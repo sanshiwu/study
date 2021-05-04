@@ -16,12 +16,12 @@ public class StudyJuliFilter implements Filter {
    *
    * <p>Another description after blank line.
    *
-   * @param record 消息记录.
+   * @param logRecord 消息记录.
    * @return boolean false代表日志消息丢弃.
    * @author admin
    */
   @Override
-  public boolean isLoggable(final LogRecord record) {
+  public boolean isLoggable(final LogRecord logRecord) {
     return true;
   }
 }

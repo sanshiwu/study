@@ -1,7 +1,7 @@
 package org.study.agent.examples.first.example2;
 
-import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
+import org.study.juli.logging.spi.Log;
 
 /**
  * This is a class description.
@@ -9,7 +9,6 @@ import org.study.juli.logging.base.LogFactory;
  * <p>Another description after blank line.
  *
  * @author admin
-
  */
 public class Examples3 {
 

@@ -11,12 +11,11 @@
   </description>
   <display-name>一个自定义servlet的例子.</display-name>
   <servlet>
-    <servlet-class>org.study.web.examples.servlet.ExampleServlet</servlet-class>
     <servlet-name>exampleServlet</servlet-name>
+    <servlet-class>org.study.web.examples.servlet.ExampleServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>exampleServlet</servlet-name>
     <url-pattern>/exampleServlet</url-pattern>
   </servlet-mapping>
-  <security-constraint/>
 </web-app>

@@ -33,7 +33,7 @@ public final class StudyTransformer implements ClassFileTransformer {
     final String classPath =
         StudyTransformer.class.getResource("/").getPath() + simpleName + ".class";
     // 自动关闭流,因为实现了Closeable接口.new File(classPath) 可以替换成classPath
-    try (final FileOutputStream out = new FileOutputStream(classPath)) {
+    try (FileOutputStream out = new FileOutputStream(classPath)) {
       out.write(bytes);
     } catch (final Exception e) {
       LOGGER.log(Level.SEVERE, "Generate class Exception: ", e);
@@ -120,37 +120,40 @@ public final class StudyTransformer implements ClassFileTransformer {
    *
    * @param fqc 类的全限定名.
    * @param method 方法对象.
-   * @throws Exception 抛出所有异常,由最终调用者处理.
    * @author Admin
    */
-  public static void enhanceMethod(final String fqc, final CtBehavior method) throws Exception {
-    // 获取方法的描述符号,不能是native和abstract.
-    final int modifiers = method.getModifiers();
-    // 排除native方法和抽象方法(无法增强).
-    if (!Modifier.isNative(modifiers) && !Modifier.isAbstract(modifiers)) {
-      // 获取方法的参数类型.
-      final CtClass[] parameterTypes = method.getParameterTypes();
-      // 获取参数的个数.
-      final int parameterCount = null != parameterTypes ? parameterTypes.length : 0;
-      // 给方法的正数第一行增加startTime变量.
-      method.addLocalVariable("startTime", CtClass.longType);
-      // 给方法的倒数第三行增加endTime变量.
-      method.addLocalVariable("endTime", CtClass.longType);
-      // startTime变量,赋值当前系统的时间.
-      method.insertBefore("startTime = System.nanoTime();");
-      // endTime变量,赋值当前系统的时间.
-      method.insertAfter("endTime = System.nanoTime(); ");
-      // 构建代码片段.
-      final String code = assembleCode(fqc, method.getName(), parameterCount);
-      // 打印插入的代码详细信息.
-      final String flag = "true";
-      final String info = System.getProperty("info", flag);
-      // true打印.
-      if (flag.equals(info)) {
-        LOGGER.info(code);
+  public static void enhanceMethod(final String fqc, final CtBehavior method) {
+    try {
+      // 获取方法的描述符号,不能是native和abstract.
+      final int modifiers = method.getModifiers();
+      // 排除native方法和抽象方法(无法增强).
+      if (!Modifier.isNative(modifiers) && !Modifier.isAbstract(modifiers)) {
+        // 获取方法的参数类型.
+        final CtClass[] parameterTypes = method.getParameterTypes();
+        // 获取参数的个数.
+        final int parameterCount = null != parameterTypes ? parameterTypes.length : 0;
+        // 给方法的正数第一行增加startTime变量.
+        method.addLocalVariable("startTime", CtClass.longType);
+        // 给方法的倒数第三行增加endTime变量.
+        method.addLocalVariable("endTime", CtClass.longType);
+        // startTime变量,赋值当前系统的时间.
+        method.insertBefore("startTime = System.nanoTime();");
+        // endTime变量,赋值当前系统的时间.
+        method.insertAfter("endTime = System.nanoTime(); ");
+        // 构建代码片段.
+        final String code = assembleCode(fqc, method.getName(), parameterCount);
+        // 打印插入的代码详细信息.
+        final String flag = "true";
+        final String info = System.getProperty("info", flag);
+        // true打印.
+        if (flag.equals(info)) {
+          LOGGER.info(code);
+        }
+        // 插入到方法的最后二行.
+        method.insertAfter(code);
       }
-      // 插入到方法的最后二行.
-      method.insertAfter(code);
+    } catch (Exception e) {
+      throw new StudyAgentRuntimeException("Enhance Method Exception.");
     }
   }
 

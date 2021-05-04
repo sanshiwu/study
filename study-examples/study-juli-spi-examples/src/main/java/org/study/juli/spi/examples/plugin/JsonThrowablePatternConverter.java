@@ -11,7 +11,8 @@ import org.apache.logging.log4j.core.pattern.ThrowablePatternConverter;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * json throwable模式转换器 java异常堆栈使用json格式进行打印,默认是多行的, 不符合json的语法,会报错 问题是,这个类偶尔可以正常解析，但是大部分时候不可以，找不到这个类.
+ * json throwable模式转换器 java异常堆栈使用json格式进行打印,默认是多行的, 不符合json的语法,会报错
+ * 问题是,这个类偶尔可以正常解析，但是大部分时候不可以，找不到这个类.
  *
  * @author admin
  */
@@ -19,9 +20,7 @@ import org.apache.logging.log4j.util.Strings;
 @ConverterKeys("aj")
 public final class JsonThrowablePatternConverter extends ThrowablePatternConverter {
 
-  /**
-   * .
-   */
+  /** . */
   private final ExtendedThrowablePatternConverter throwablePatternConverter;
 
   /**
@@ -29,7 +28,7 @@ public final class JsonThrowablePatternConverter extends ThrowablePatternConvert
    *
    * <p>Another description after blank line.
    *
-   * @param config  .
+   * @param config .
    * @param options .
    * @author admin
    */
@@ -41,7 +40,7 @@ public final class JsonThrowablePatternConverter extends ThrowablePatternConvert
   /**
    * This is a method description.
    *
-   * @param config  This is a param description.
+   * @param config This is a param description.
    * @param options This is a param description.
    * @return This is a return description.
    * @author admin
@@ -56,6 +55,8 @@ public final class JsonThrowablePatternConverter extends ThrowablePatternConvert
    *
    * <p>Another description after blank line.
    *
+   * @param line .
+   * @return String .
    * @author admin
    */
   private static String asJson(final String line) {
@@ -84,6 +85,8 @@ public final class JsonThrowablePatternConverter extends ThrowablePatternConvert
    *
    * <p>Another description after blank line.
    *
+   * @param event .
+   * @return String .
    * @author admin
    */
   private String formatStacktrace(final LogEvent event) {
@@ -97,6 +100,8 @@ public final class JsonThrowablePatternConverter extends ThrowablePatternConvert
    *
    * <p>Another description after blank line.
    *
+   * @param consoleStacktrace .
+   * @return String .
    * @author admin
    */
   private String formatJson(final String consoleStacktrace) {

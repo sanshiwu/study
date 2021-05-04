@@ -21,13 +21,28 @@ public class GuardianConsumerMonitorRunnable implements Runnable {
   /** . */
   private static final JuliLogger LOGGER =
       JuliLogger.getLogger(GuardianConsumerMonitorRunnable.class.getName());
-
+  /** . */
   private final WorkerContext context;
 
-  public GuardianConsumerMonitorRunnable(WorkerContext context) {
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param context .
+   * @author admin
+   */
+  public GuardianConsumerMonitorRunnable(final WorkerContext context) {
     this.context = context;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
   public void run() {
     try {

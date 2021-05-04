@@ -16,7 +16,8 @@
   <fileSets>
     <fileSet>
       <!-- 手动复制classes文件夹.-->
-      <directory>../study-examples/study-web-examples/study-web-examples-servlet/target/classes</directory>
+      <directory>../study-examples/study-web-examples/study-web-examples-servlet/target/classes
+      </directory>
       <includes>
         <include>/**/*.class</include>
       </includes>
@@ -24,7 +25,9 @@
     </fileSet>
     <fileSet>
       <!-- 手动复制WEB-IN文件夹.-->
-      <directory>../study-examples/study-web-examples/study-web-examples-servlet/target/classes/WEB-INF</directory>
+      <directory>
+        ../study-examples/study-web-examples/study-web-examples-servlet/target/classes/WEB-INF
+      </directory>
       <includes>
         <include>/**/*</include>
       </includes>
@@ -36,7 +39,9 @@
       <fileMode>0644</fileMode>
       <outputDirectory/>
       <!-- 手动复制所有html文件.-->
-      <source>../study-examples/study-web-examples/study-web-examples-servlet/target/classes/index.html</source>
+      <source>
+        ../study-examples/study-web-examples/study-web-examples-servlet/target/classes/index.html
+      </source>
     </file>
   </files>
   <formats>

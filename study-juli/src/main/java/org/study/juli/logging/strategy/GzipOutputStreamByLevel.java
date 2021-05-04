@@ -10,12 +10,21 @@ import java.util.zip.GZIPOutputStream;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-06 14:58
- * @since 2021-04-06 14:58:00
  */
 public class GzipOutputStreamByLevel extends GZIPOutputStream {
 
-  public GzipOutputStreamByLevel(OutputStream out, int bufSize, int level) throws IOException {
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param out .
+   * @param bufSize .
+   * @param level .
+   * @author admin
+   */
+  public GzipOutputStreamByLevel(final OutputStream out, final int bufSize, final int level)
+      throws IOException {
     super(out, bufSize);
     def.setLevel(level);
   }

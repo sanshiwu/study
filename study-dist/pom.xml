@@ -2,35 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.study</groupId>
-    <artifactId>study</artifactId>
-    <version>2020</version>
-  </parent>
   <artifactId>study-dist</artifactId>
-  <packaging>pom</packaging>
-  <!-- 打包时需要哪些依赖的jar(配合 dependencySets).-->
-  <!-- 这个包主要是为了测试dependencySets打包使用.-->
-  <dependencies>
-    <dependency>
-      <groupId>com.lmax</groupId>
-      <artifactId>disruptor</artifactId>
-      <version>3.4.2</version>
-    </dependency>
-    <dependency>
-      <artifactId>log4j-core</artifactId>
-      <groupId>org.apache.logging.log4j</groupId>
-      <!--  2.9.1有不少问题,所以选择2.13.0-->
-      <!--  1:Required filename-based automodules detected-->
-      <!--  2:代码中偶尔读取不到自定义插件-->
-      <!--  3:日志格式输出的更好-->
-      <scope>compile</scope>
-      <version>2.13.3</version>
-    </dependency>
-  </dependencies>
-  <!-- archive-tmp空目录问题: https://issues.apache.org/jira/browse/MASSEMBLY-260 -->
-  <!-- 现在还不知道为什么会留下一个空目录.这个目录具体是干什么的,也没有资料.-->
   <build>
     <plugins>
       <plugin>
@@ -44,11 +16,11 @@
               <attach>false</attach>
               <!--内置打包描述符,http://maven.apache.org/components/plugins/maven-assembly-plugin/descriptor-refs.html-->
               <descriptorRefs>
-                <!--只打包target下的jar和docs,根目录下的README,LICENSE,NOTICE-->
+                <!--只打包target下的jar和docs,根目录下的README.md,LICENSE.txt,NOTICE-->
                 <!--<descriptorRef>bin</descriptorRef>-->
                 <!--只打包所有的jar,到一个fat jar中.-->
                 <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
-                <!--只打包根目录下的README,LICENSE,NOTICE,src,pom.xml-->
+                <!--只打包根目录下的README.md,LICENSE.txt,NOTICE,src,pom.xml-->
                 <!--<descriptorRef>src</descriptorRef>-->
                 <!--只打包根本目下的所有,不包括*.log和target目录.-->
                 <!--<descriptorRef>project</descriptorRef>-->
@@ -92,4 +64,32 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <artifactId>disruptor</artifactId>
+      <groupId>com.lmax</groupId>
+      <version>3.4.2</version>
+    </dependency>
+    <dependency>
+      <artifactId>log4j-core</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <!--  2.9.1有不少问题,所以选择2.13.0-->
+      <!--  1:Required filename-based automodules detected-->
+      <!--  2:代码中偶尔读取不到自定义插件-->
+      <!--  3:日志格式输出的更好-->
+      <scope>compile</scope>
+      <version>2.13.3</version>
+    </dependency>
+  </dependencies>
+  <modelVersion>4.0.0</modelVersion>
+  <!-- 打包时需要哪些依赖的jar(配合 dependencySets).-->
+  <!-- 这个包主要是为了测试dependencySets打包使用.-->
+  <packaging>pom</packaging>
+  <!-- archive-tmp空目录问题: https://issues.apache.org/jira/browse/MASSEMBLY-260 -->
+  <!-- 现在还不知道为什么会留下一个空目录.这个目录具体是干什么的,也没有资料.-->
+  <parent>
+    <artifactId>study</artifactId>
+    <groupId>org.study</groupId>
+    <version>2020</version>
+  </parent>
 </project>

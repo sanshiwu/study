@@ -10,14 +10,13 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.Level;
 import org.study.juli.logging.exception.StudyJuliRuntimeException;
 import org.study.juli.logging.handler.Handler;
 import org.study.juli.logging.logger.JuliLogger;
 
 /**
- * 增强JDK默认的日志管理.
+ * 增强JDK默认的日志管理(需要优化).
  *
  * <p>Another description after blank line.
  *
@@ -25,9 +24,14 @@ import org.study.juli.logging.logger.JuliLogger;
  *
  * @author admin
  */
-@SuppressWarnings({"java:S3776"})
 public final class StudyJuliLogManager extends AbstractLogManager {
-
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   public StudyJuliLogManager() {
     //
   }
@@ -35,7 +39,7 @@ public final class StudyJuliLogManager extends AbstractLogManager {
   /**
    * Logger代表使用日志的类,比如在类中创建日志对象,并打印日志消息,那么这个类就叫Logger.
    *
-   * <p>这个方法需要仔细研究,重构,目前业务逻辑清晰,但是代码很糟糕.
+   * <p>这个方法需要仔细研究,重构,目前业务逻辑清晰,但是代码很糟糕. @SuppressWarnings({"java:S3776"})
    *
    * @author admin
    */
@@ -256,6 +260,11 @@ public final class StudyJuliLogManager extends AbstractLogManager {
     return result;
   }
 
+  @Override
+  public void readConfiguration(final InputStream ins) throws IOException, SecurityException {
+    //
+  }
+
   /**
    * 读取日志的配置文件,日志管理器必须和日志文件一起配置.
    *
@@ -343,19 +352,14 @@ public final class StudyJuliLogManager extends AbstractLogManager {
   }
 
   @Override
-  public void readConfiguration(InputStream ins) throws IOException, SecurityException {
-    //
-  }
-
-  @Override
-  public void updateConfiguration(Function<String, BiFunction<String, String, String>> mapper)
+  public void updateConfiguration(final Function<String, BiFunction<String, String, String>> mapper)
       throws IOException {
     //
   }
 
   @Override
   public void updateConfiguration(
-      InputStream ins, Function<String, BiFunction<String, String, String>> mapper)
+      final InputStream ins, final Function<String, BiFunction<String, String, String>> mapper)
       throws IOException {
     //
   }
@@ -366,12 +370,12 @@ public final class StudyJuliLogManager extends AbstractLogManager {
   }
 
   @Override
-  public AbstractLogManager addConfigurationListener(Runnable listener) {
+  public AbstractLogManager addConfigurationListener(final Runnable listener) {
     return null;
   }
 
   @Override
-  public void removeConfigurationListener(Runnable listener) {
+  public void removeConfigurationListener(final Runnable listener) {
     //
   }
 

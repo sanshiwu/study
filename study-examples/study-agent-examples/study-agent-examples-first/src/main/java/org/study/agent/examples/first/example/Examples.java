@@ -11,8 +11,8 @@ import org.study.agent.examples.first.example4.example6.Examples6;
 import org.study.agent.examples.first.example5.Examples5;
 import org.study.agent.examples.first.example5.Test5;
 import org.study.agent.examples.first.example6.Example6;
-import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
+import org.study.juli.logging.spi.Log;
 
 /**
  * This is a class description.
@@ -40,31 +40,31 @@ public class Examples {
     Test4 test4 = new Test4();
     Test5 test5 = new Test5();
     for (int i = 0; i < 1000; i++) {
-      //输入到日志1example文件.
+      // 输入到日志1example文件.
       test1.test(i);
-      //输入到日志2example文件.
+      // 输入到日志2example文件.
       test2.test(i);
-      //输入到日志3example文件.
+      // 输入到日志3example文件.
       test3.test(i);
-      //输入到日志4example文件.
+      // 输入到日志4example文件.
       test4.test(i);
-      //输入到日志5example文件.
+      // 输入到日志5example文件.
       test5.test(i);
-      //输入到日志2study文件.
+      // 输入到日志2study文件.
       examples2.main(i);
-      //输入到日志3study文件.
+      // 输入到日志3study文件.
       examples3.main(i);
-      //输入到日志4study文件.
+      // 输入到日志4study文件.
       examples4.main(i);
-      //输入到日志2study文件.
+      // 输入到日志2study文件.
       test.main(i);
-      //输入到日志2study文件.
+      // 输入到日志2study文件.
       examples5.main(i);
-      //输入到日志4study文件.
+      // 输入到日志4study文件.
       examples6.main(i);
-      //输入到日志study_juli文件.
+      // 输入到日志study_juli文件.
       example6.main(i);
-      //输入到日志1study文件.
+      // 输入到日志1study文件.
       log.error("Examples>error>>>>我要去的日志文件是1study,当前的日志计数是:{}", "" + i);
       log.info("Examples>info>>>>我要去的日志文件是1study,当前的日志计数是:{}", "" + i);
       log.warn("Examples>warn>>>>我要去的日志文件是1study,当前的日志计数是:{}", "" + i);

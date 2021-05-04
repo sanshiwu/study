@@ -11,21 +11,24 @@ import org.study.juli.logging.core.LogRecord;
  * @author admin
  */
 public interface Filter extends BooleanSupplier {
-  
-  /**
-   * This is a method description.
-   *
-   * <p>Another description after blank line.
-   *
-   * @author admin
-   */
-  boolean isLoggable(LogRecord record);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @param logRecord .
+   * @return b.
+   * @author admin
+   */
+  boolean isLoggable(LogRecord logRecord);
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return b.
    * @author admin
    */
   @Override

@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.manager.AbstractLogManager;
 
@@ -67,16 +66,14 @@ public class StudyJuliMessageJsonFormatter extends AbstractMessageFormatter {
    *
    * <p>Another description after blank line.
    *
-   * @param record 需要格式化的消息.
+   * @param logRecord 需要格式化的消息.
    * @return 返回格式化后的消息.
    * @author admin
    */
   @Override
-  public String format(final LogRecord record) {
-    // 首先兼容JDK原生的日志格式,然后进行格式化处理.
-    String message = defaultFormat(record);
+  public String format(final LogRecord logRecord) {
     // UTC时区获取当前系统的日期.
-    final ZonedDateTime zdt = ZonedDateTime.ofInstant(record.getInstant(), ZoneOffset.UTC);
+    final ZonedDateTime zdt = ZonedDateTime.ofInstant(logRecord.getInstant(), ZoneOffset.UTC);
     // 日期格式化.
     final String format = this.pattern.format(zdt);
     final StringBuilder sb = new StringBuilder();
@@ -85,41 +82,43 @@ public class StudyJuliMessageJsonFormatter extends AbstractMessageFormatter {
     sb.append(this.inQuotes(format));
     sb.append(",");
     sb.append(this.inQuotes("level") + ": ");
-    sb.append(this.inQuotes(record.getLevel().getName()));
+    sb.append(this.inQuotes(logRecord.getLevel().getName()));
     sb.append(",");
     sb.append(this.inQuotes("thread") + ": ");
     sb.append(this.inQuotes(Thread.currentThread().getName()));
     sb.append(",");
     sb.append(this.inQuotes("fullClassPath") + ": ");
-    sb.append(this.inQuotes(record.getSourceClassName()));
+    sb.append(this.inQuotes(logRecord.getSourceClassName()));
     sb.append(",");
     sb.append(this.inQuotes("method") + ": ");
-    sb.append(this.inQuotes(record.getSourceMethodName()));
+    sb.append(this.inQuotes(logRecord.getSourceMethodName()));
     sb.append(",");
     sb.append(this.inQuotes("lineNumber") + ": ");
-    sb.append(this.inQuotes(record.getLineNumber() + ""));
+    sb.append(this.inQuotes(logRecord.getLineNumber() + ""));
     sb.append(",");
     if (checkUnique()) {
       sb.append(this.inQuotes("uniqueId") + ": ");
-      sb.append(this.inQuotes(record.getUniqueId()));
+      sb.append(this.inQuotes(logRecord.getUniqueId()));
       sb.append(",");
     }
     sb.append(this.inQuotes("serialNumber") + ": ");
-    sb.append(record.getSerialNumber());
+    sb.append(logRecord.getSerialNumber());
     sb.append(",");
     // 日志自定义字段.
-    Map<String, String> customs = record.getCustoms();
-    for (Entry<String, String> entry : customs.entrySet()) {
+    final Map<String, String> customs = logRecord.getCustoms();
+    for (final Entry<String, String> entry : customs.entrySet()) {
       String key = entry.getKey();
       String value = entry.getValue();
       sb.append(this.inQuotes(key) + ": ");
       sb.append(this.inQuotes(value));
       sb.append(",");
     }
+    // 首先兼容JDK原生的日志格式,然后进行格式化处理.
+    final String message = defaultFormat(logRecord);
     sb.append(this.inQuotes("message") + ": ");
     sb.append(this.inQuotes(message));
     // 如果有异常堆栈信息,则打印出来.
-    Throwable thrown = record.getThrown();
+    final Throwable thrown = logRecord.getThrown();
     if (thrown != null) {
       sb.append(",");
       sb.append(this.inQuotes("stacktrace") + ": ");

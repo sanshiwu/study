@@ -9,13 +9,20 @@ import java.io.FileFilter;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-06 22:13
- * @since 2021-04-06 22:13:00
  */
 public class StrategyFileFilter implements FileFilter {
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param paramFile .
+   * @return boolean .
+   * @author admin
+   */
   @Override
-  public boolean accept(File paramFile) {
+  public boolean accept(final File paramFile) {
     String name = paramFile.getName();
     return name.endsWith(".log");
   }

@@ -13,22 +13,38 @@ import org.study.juli.logging.exception.StudyJuliRuntimeException;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-06 14:21
- * @since 2021-04-06 14:21:00
  */
 public class GzipCompressStrategy extends AbstractCompressStrategy {
+  /** . */
   private static final int BUF_SIZE = 8192;
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   public GzipCompressStrategy() {
     //
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param source .
+   * @param destination .
+   * @param compressionLevel .
+   * @author admin
+   */
   @Override
   public void execute(final File source, final File destination, final int compressionLevel) {
-    try (final FileInputStream fis = new FileInputStream(source);
-        final OutputStream fos = new FileOutputStream(destination);
-        final OutputStream gzipOut = new GzipOutputStreamByLevel(fos, BUF_SIZE, compressionLevel);
-        final OutputStream os = new BufferedOutputStream(gzipOut, BUF_SIZE)) {
+    try (FileInputStream fis = new FileInputStream(source);
+        OutputStream fos = new FileOutputStream(destination);
+        OutputStream gzipOut = new GzipOutputStreamByLevel(fos, BUF_SIZE, compressionLevel);
+        OutputStream os = new BufferedOutputStream(gzipOut, BUF_SIZE)) {
       final byte[] buff = new byte[BUF_SIZE];
       int n;
       while ((n = fis.read(buff)) != -1) {

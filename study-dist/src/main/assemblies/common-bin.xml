@@ -13,7 +13,9 @@
       <fileMode>0644</fileMode>
       <!-- 拷贝所有依赖jar到插件输出目录outputDirectory/{finalName}/lib下-->
       <outputDirectory>/lib</outputDirectory>
-      <outputFileNameMapping>${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+      <outputFileNameMapping>
+        ${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}
+      </outputFileNameMapping>
       <scope>runtime</scope>
       <!-- 如果是true,会将jar包解压到/lib下.如果为false,直接复制,不会解压默认false.-->
       <unpack>false</unpack>

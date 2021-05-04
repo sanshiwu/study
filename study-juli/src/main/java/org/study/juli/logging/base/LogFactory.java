@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.nio.file.FileSystems;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import org.study.juli.logging.core.JuliLog;
+import org.study.juli.logging.spi.JuliLog;
 import org.study.juli.logging.exception.StudyJuliConfigException;
 import org.study.juli.logging.spi.Log;
 

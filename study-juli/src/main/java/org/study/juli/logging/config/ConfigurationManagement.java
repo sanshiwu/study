@@ -14,7 +14,9 @@ import org.study.juli.logging.manager.ClassLoaderLogInfo;
  * @author admin
  */
 public class ConfigurationManagement implements Management {
+  /** . */
   private final AbstractLogManager logManager = AbstractLogManager.getLogManager();
+
   /**
    * This is a method description.
    *

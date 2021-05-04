@@ -19,60 +19,69 @@ public interface Management {
    *
    * <p>Another description after blank line.
    *
+   * @param handlerClassName .
    * @author admin
    */
-  void createHandler(final String handlerClassName);
+  void createHandler(String handlerClassName);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @param handlerName .
    * @author admin
    */
-  void deleteHandler(final String handlerName);
+  void deleteHandler(String handlerName);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @param handlerName .
    * @author admin
    */
-  void updateHandler(final String handlerName);
+  void updateHandler(String handlerName);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @param loggerName .
+   * @return JuliLogger
    * @author admin
    */
-  JuliLogger getLogger(final String loggerName);
+  JuliLogger getLogger(String loggerName);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @param handlerName .
    * @author admin
    */
-  void closeHandler(final String handlerName);
+  void closeHandler(String handlerName);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @param handlerName .
+   * @return Handler
    * @author admin
    */
-  Handler getHandler(final String handlerName);
+  Handler getHandler(String handlerName);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @return Map
    * @author admin
    */
   Map<String, JuliLogger> loggers();
@@ -82,6 +91,7 @@ public interface Management {
    *
    * <p>Another description after blank line.
    *
+   * @return Map
    * @author admin
    */
   Map<String, Handler> handlers();
@@ -91,6 +101,7 @@ public interface Management {
    *
    * <p>Another description after blank line.
    *
+   * @return ClassLoaderLogInfo
    * @author admin
    */
   ClassLoaderLogInfo getClassLoaderLogInfo();

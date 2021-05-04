@@ -6,7 +6,7 @@ import org.study.juli.logging.filter.Filter;
 import org.study.juli.logging.formatter.Formatter;
 
 /**
- * This is a method description.
+ * This is a class description.
  *
  * <p>Another description after blank line.
  *
@@ -19,9 +19,10 @@ public interface Handler {
    *
    * <p>Another description after blank line.
    *
+   * @param logRecord .
    * @author admin
    */
-  void publish(LogRecord record);
+  void publish(LogRecord logRecord);
 
   /**
    * This is a method description.
@@ -37,6 +38,7 @@ public interface Handler {
    *
    * <p>Another description after blank line.
    *
+   * @throws SecurityException .
    * @author admin
    */
   void close() throws SecurityException;
@@ -46,6 +48,7 @@ public interface Handler {
    *
    * <p>Another description after blank line.
    *
+   * @param newFormatter .
    * @author admin
    */
   void setFormatter(Formatter newFormatter);
@@ -55,6 +58,8 @@ public interface Handler {
    *
    * <p>Another description after blank line.
    *
+   * @param encoding .
+   * @throws SecurityException .
    * @author admin
    */
   void setEncoding(String encoding) throws SecurityException;
@@ -64,6 +69,8 @@ public interface Handler {
    *
    * <p>Another description after blank line.
    *
+   * @param newFilter .
+   * @throws SecurityException .
    * @author admin
    */
   void setFilter(Filter newFilter) throws SecurityException;
@@ -73,6 +80,8 @@ public interface Handler {
    *
    * <p>Another description after blank line.
    *
+   * @param newLevel .
+   * @throws SecurityException .
    * @author admin
    */
   void setLevel(Level newLevel) throws SecurityException;
@@ -82,15 +91,18 @@ public interface Handler {
    *
    * <p>Another description after blank line.
    *
+   * @param logRecord .
+   * @return b.
    * @author admin
    */
-  boolean isLoggable(LogRecord record);
+  boolean isLoggable(LogRecord logRecord);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @throws SecurityException .
    * @author admin
    */
   void checkPermission() throws SecurityException;

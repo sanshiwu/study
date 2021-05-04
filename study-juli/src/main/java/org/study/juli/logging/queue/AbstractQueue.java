@@ -1,7 +1,6 @@
 package org.study.juli.logging.queue;
 
 import java.util.concurrent.LinkedBlockingDeque;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.Level;
 import org.study.juli.logging.logger.JuliLogger;
 
@@ -52,6 +51,14 @@ public abstract class AbstractQueue<T> implements StudyQueue<T> {
     this.queue = new LinkedBlockingDeque<>(capacity);
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return T .
+   * @author admin
+   */
   @Override
   public T poll() {
     return queue.poll();

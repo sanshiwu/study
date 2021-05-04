@@ -71,8 +71,19 @@ public class WorkerStudyContextImpl extends AbstractStudyContext implements Work
     return scheduledExecutorService;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param unique .
+   * @param event .
+   * @param handler .
+   * @author admin
+   */
   @Override
-  public <T> void executeInExecutorServiceV2(String unique, T event, StudyHandler<T> handler) {
+  public <T> void executeInExecutorServiceV2(
+      final String unique, final T event, final StudyHandler<T> handler) {
     Runnable task = () -> dispatchV2(unique, event, handler);
     executorService.submit(task);
   }

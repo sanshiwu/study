@@ -96,16 +96,10 @@ public abstract class AbstractHandler implements Handler {
   /** 工作任务上下文. */
   protected static final WorkerContext LOG_PRODUCER_NOTICE_CONSUMER_CONTEXT =
       new WorkerStudyContextImpl(LOG_PRODUCER_NOTICE_CONSUMER, SCHEDULED_EXECUTOR_SERVICE);
-
+  /** . */
   protected static final int OFF_VALUE = Level.OFF.intValue();
   /** 全局handler日志计数. */
   protected static final AtomicLong GLOBAL_COUNTER = new AtomicLong(0L);
-  /** 单个handler日志计数. */
-  protected final AtomicLong counter = new AtomicLong(0L);
-
-  /** 生产通知消费处理器.为Handler自己的队列创建一个生产者通知消费者处理程序. */
-  protected final StudyHandler<Handler> producerNoticeConsumerWorker =
-      new ProducerNoticeConsumerWorker();
 
   static {
     // 线程监控任务.
@@ -116,6 +110,19 @@ public abstract class AbstractHandler implements Handler {
     GUARDIAN.monitor(LOG_GUARDIAN_CONSUMER_CONTEXT);
   }
 
+  /** 单个handler日志计数. */
+  protected final AtomicLong counter = new AtomicLong(0L);
+  /** 生产通知消费处理器.为Handler自己的队列创建一个生产者通知消费者处理程序. */
+  protected final StudyHandler<Handler> producerNoticeConsumerWorker =
+      new ProducerNoticeConsumerWorker();
+  /** 一个非公平锁,fair=false. */
+  protected final ReadWriteLock readWriteLock = new ReentrantReadWriteLock(false);
+  /** 非公平读锁. */
+  protected final Lock readLock = this.readWriteLock.readLock();
+  /** 非公平写锁. */
+  protected final Lock writeLock = this.readWriteLock.writeLock();
+  /** . */
+  protected final AbstractLogManager manager = AbstractLogManager.getLogManager();
   /** 代表当前处理器接收到最后一条日志的时间,0L表示从来没接收到. */
   protected long sys;
   /** 按照文件名翻转日志文件. */
@@ -126,17 +133,13 @@ public abstract class AbstractHandler implements Handler {
   protected DateTimeFormatter intervalFormatter;
   /** . */
   protected boolean rotatable = true;
-  /** 一个非公平锁,fair=false. */
-  protected final ReadWriteLock readWriteLock = new ReentrantReadWriteLock(false);
-  /** 非公平读锁. */
-  protected final Lock readLock = this.readWriteLock.readLock();
-  /** 非公平写锁. */
-  protected final Lock writeLock = this.readWriteLock.writeLock();
-
-  protected final AbstractLogManager manager = AbstractLogManager.getLogManager();
+  /** . */
   protected Filter filter;
+  /** . */
   protected Formatter formatter;
+  /** . */
   protected Level logLevel = Level.ALL;
+  /** . */
   protected String encoding;
 
   /** 生产日志处理器. */
@@ -194,64 +197,152 @@ public abstract class AbstractHandler implements Handler {
     return this.sys;
   }
 
-  @Override
-  public synchronized void setFormatter(Formatter newFormatter) throws SecurityException {
-    checkPermission();
-    formatter = Objects.requireNonNull(newFormatter);
-  }
-
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return Formatter
+   * @author admin
+   */
   public synchronized Formatter getFormatter() {
     return formatter;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param newFormatter .
+   * @throws SecurityException .
+   * @author admin
+   */
   @Override
-  public synchronized void setEncoding(String encoding) throws SecurityException {
+  public synchronized void setFormatter(final Formatter newFormatter) throws SecurityException {
     checkPermission();
-    this.encoding = encoding;
+    formatter = Objects.requireNonNull(newFormatter);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return String
+   * @author admin
+   */
   public synchronized String getEncoding() {
     return encoding;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param encoding .
+   * @author admin
+   */
   @Override
-  public synchronized void setFilter(Filter newFilter) throws SecurityException {
+  public synchronized void setEncoding(final String encoding) throws SecurityException {
     checkPermission();
-    filter = newFilter;
+    this.encoding = encoding;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return Filter
+   * @author admin
+   */
   public synchronized Filter getFilter() {
     return filter;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @throws SecurityException .
+   * @author admin
+   */
   @Override
-  public synchronized void setLevel(Level newLevel) throws SecurityException {
+  public synchronized void setFilter(final Filter newFilter) throws SecurityException {
     checkPermission();
-    logLevel = newLevel;
+    filter = newFilter;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return Level .
+   * @author admin
+   */
   public synchronized Level getLevel() {
     return logLevel;
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @throws SecurityException .
+   * @author admin
+   */
   @Override
-  public boolean isLoggable(LogRecord record) {
+  public synchronized void setLevel(final Level newLevel) throws SecurityException {
+    checkPermission();
+    logLevel = newLevel;
+  }
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
+  @Override
+  public boolean isLoggable(final LogRecord logRecord) {
     final int levelValue = getLevel().intValue();
-    if (record.getLevel().intValue() < levelValue || levelValue == OFF_VALUE) {
+    if (logRecord.getLevel().intValue() < levelValue || levelValue == OFF_VALUE) {
       return false;
     }
     final Filter filterTemp = getFilter();
     if (filterTemp == null) {
       return true;
     }
-    return filterTemp.isLoggable(record);
+    return filterTemp.isLoggable(logRecord);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @throws SecurityException .
+   * @author admin
+   */
   @Override
   public void checkPermission() throws SecurityException {
     manager.checkPermission();
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return AtomicLong .
+   * @author admin
+   */
   public AtomicLong getCounter() {
     return counter;
   }

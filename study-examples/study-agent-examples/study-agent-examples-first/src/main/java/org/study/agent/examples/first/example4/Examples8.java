@@ -1,7 +1,7 @@
 package org.study.agent.examples.first.example4;
 
-import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
+import org.study.juli.logging.spi.Log;
 
 /**
  * This is a class description.

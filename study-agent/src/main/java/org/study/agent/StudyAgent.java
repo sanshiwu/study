@@ -11,9 +11,7 @@ import java.util.logging.Logger;
  */
 public final class StudyAgent {
 
-  /**
-   * .
-   */
+  /** . */
   private static final Logger LOGGER = Logger.getLogger(StudyAgent.class.getName());
 
   private StudyAgent() {
@@ -24,7 +22,7 @@ public final class StudyAgent {
    * 在入口main方法之前执行.
    *
    * @param agentArgs 探针参数.
-   * @param inst      增强基础类.
+   * @param inst 增强基础类.
    */
   public static void premain(final String agentArgs, final Instrumentation inst) {
     LOGGER.log(Level.INFO, "Agent Premain Args: {0}", agentArgs);

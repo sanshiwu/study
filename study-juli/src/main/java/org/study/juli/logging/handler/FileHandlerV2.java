@@ -10,14 +10,12 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.Level;
 import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.exception.StudyJuliRuntimeException;
 import org.study.juli.logging.filter.Filter;
 import org.study.juli.logging.formatter.Formatter;
 import org.study.juli.logging.queue.FileQueue;
-import org.study.juli.logging.queue.StudyHandler;
 import org.study.juli.logging.utils.ClassLoadingUtils;
 
 /**
@@ -51,18 +49,13 @@ public class FileHandlerV2 extends AbstractHandler {
    * @author admin
    */
   public FileHandlerV2() {
-    try {
-      // 读取日志配置文件,初始化配置.
-      config();
-      // 动态配置队列属性.
-      fileQueue = new FileQueue(prefix);
-      producerWorker = fileQueue.createProducerWorker();
-      // 开始创建文件流,用于日志写入.
-      open();
-    } catch (Exception e) {
-      // 处理所有异常.
-      throw new StudyJuliRuntimeException(e);
-    }
+    // 读取日志配置文件,初始化配置.
+    config();
+    // 动态配置队列属性.
+    fileQueue = new FileQueue(prefix);
+    producerWorker = fileQueue.createProducerWorker();
+    // 开始创建文件流,用于日志写入.
+    open();
   }
 
   /**
@@ -124,7 +117,7 @@ public class FileHandlerV2 extends AbstractHandler {
    * @author admin
    */
   @Override
-  public void publish(final LogRecord record) {
+  public void publish(final LogRecord logRecord) {
     // 记录当前处理器最后一次处理日志的时间.
     sys = System.currentTimeMillis();
     GLOBAL_COUNTER.incrementAndGet();
@@ -134,7 +127,7 @@ public class FileHandlerV2 extends AbstractHandler {
     // 处理器可以处理日志的级别.
     final int levelValue = level.intValue();
     // 用户发送日志的级别.
-    int recordLevel = record.getLevel().intValue();
+    int recordLevel = logRecord.getLevel().intValue();
     // 如果日志的消息级别,比当前处理器的级别小则不处理日志. 如果当前处理器关闭日志级别,处理器也不处理日志.
     if (recordLevel < levelValue || levelValue == Level.OFF.intValue()) {
       return;
@@ -142,11 +135,11 @@ public class FileHandlerV2 extends AbstractHandler {
     // 获取当前处理器的日志过滤器.
     Filter filter = this.getFilter();
     // 如果过滤器返回false,当前日志消息丢弃.
-    if (!filter.isLoggable(record)) {
+    if (!filter.isLoggable(logRecord)) {
       return;
     }
     // 启动一个线程,开始生产日志.(考虑将LogRecord预先格式化成字符串消息,LogRecord对象生命周期结束.)
-    LOG_PRODUCER_CONTEXT.executeInExecutorService(record, producerWorker);
+    LOG_PRODUCER_CONTEXT.executeInExecutorService(logRecord, producerWorker);
     // 如果队列容量大于等于5000,通知消费者消费.如果此时生产者不再生产数据,则队列中会有<5000条数据永久存在,因此需要启动一个守护者线程GUARDIAN处理.
     int size = fileQueue.size();
     // 当前处理器的队列中日志消息达到5000条,处理一次.
@@ -162,6 +155,8 @@ public class FileHandlerV2 extends AbstractHandler {
    *
    * <p>Another description after blank line.
    *
+   * @param current .
+   * @return boolean .
    * @author admin
    */
   private boolean checkState(final long current) {
@@ -177,46 +172,50 @@ public class FileHandlerV2 extends AbstractHandler {
    * @throws Exception 抛出所有异常.
    * @author admin
    */
-  private void config() throws Exception {
-    // 是否按照天,进行切分日志.
-    String rotatable = getProperty(".rotatable", "true");
-    // 日志文件翻转开关.
-    this.rotatable = Boolean.parseBoolean(rotatable);
-    // 设置日志文件翻转开关.
-    this.directory = getProperty(".directory", "logs");
-    // 设置日志文件目录.
-    this.prefix = getProperty(".prefix", "study_juli.");
-    // 设置日志文件前缀.
-    this.suffix = getProperty(".suffix", ".log");
-    // 设置日志文件后缀.
-    // 设置日志文件翻转间隔.
-    interval = Integer.parseInt(getProperty(".interval", "1"));
-    // 设置日志文件翻转间隔格式化.
-    intervalFormatter = DateTimeFormatter.ofPattern(getProperty(".intervalFormatter", "yyyyMMdd"));
-    // UTC时区获取当前系统的日期.
-    final ZonedDateTime zdt = ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
-    // 设置处理器创建时当前的系统时间.
-    initialization = Long.parseLong(intervalFormatter.format(zdt));
-    // 设置处理器创建时当前的系统时间.
-    // 设置日志文件的编码.
-    setEncoding(getProperty(".encoding", "UTF-8"));
-    // 设置日志文件的级别.
-    setLevel(Level.findLevel(getProperty(".level", "" + Level.ALL)));
-    // 设置日志文件的过滤器.
-    String filterName = getProperty(".filter", "org.study.juli.logging.filter.StudyJuliFilter");
-    // 设置过滤器.
-    Constructor<?> filterConstructor = ClassLoadingUtils.constructor(filterName);
-    setFilter((Filter) filterConstructor.newInstance());
-    // 获取日志格式化器.
-    String formatterName =
-        getProperty(".formatter", Constants.FORMATTER);
-    // 设置日志格式化器.
-    Constructor<?> formatterConstructor = ClassLoadingUtils.constructor(formatterName);
-    setFormatter((Formatter) formatterConstructor.newInstance());
-    // 设置日志格式化器.
-    formatter = getFormatter();
-    // 日志的文件对象.
-    logFilePath = getFile();
+  private void config() {
+    try {
+      // 是否按照天,进行切分日志.
+      String rotatable = getProperty(".rotatable", "true");
+      // 日志文件翻转开关.
+      this.rotatable = Boolean.parseBoolean(rotatable);
+      // 设置日志文件翻转开关.
+      this.directory = getProperty(".directory", "logs");
+      // 设置日志文件目录.
+      this.prefix = getProperty(".prefix", "study_juli.");
+      // 设置日志文件前缀.
+      this.suffix = getProperty(".suffix", ".log");
+      // 设置日志文件后缀.
+      // 设置日志文件翻转间隔.
+      interval = Integer.parseInt(getProperty(".interval", "1"));
+      // 设置日志文件翻转间隔格式化.
+      intervalFormatter =
+          DateTimeFormatter.ofPattern(getProperty(".intervalFormatter", "yyyyMMdd"));
+      // UTC时区获取当前系统的日期.
+      final ZonedDateTime zdt = ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
+      // 设置处理器创建时当前的系统时间.
+      initialization = Long.parseLong(intervalFormatter.format(zdt));
+      // 设置处理器创建时当前的系统时间.
+      // 设置日志文件的编码.
+      setEncoding(getProperty(".encoding", "UTF-8"));
+      // 设置日志文件的级别.
+      setLevel(Level.findLevel(getProperty(".level", "" + Level.ALL)));
+      // 设置日志文件的过滤器.
+      String filterName = getProperty(".filter", "org.study.juli.logging.filter.StudyJuliFilter");
+      // 设置过滤器.
+      Constructor<?> filterConstructor = ClassLoadingUtils.constructor(filterName);
+      setFilter((Filter) ClassLoadingUtils.newInstance(filterConstructor));
+      // 获取日志格式化器.
+      String formatterName = getProperty(".formatter", Constants.FORMATTER);
+      // 设置日志格式化器.
+      Constructor<?> formatterConstructor = ClassLoadingUtils.constructor(formatterName);
+      setFormatter((Formatter) ClassLoadingUtils.newInstance(formatterConstructor));
+      // 设置日志格式化器.
+      formatter = getFormatter();
+      // 日志的文件对象.
+      logFilePath = getFile();
+    } catch (Exception e) {
+      throw new StudyJuliRuntimeException(e);
+    }
   }
 
   private File getFile() {
@@ -240,37 +239,11 @@ public class FileHandlerV2 extends AbstractHandler {
    *
    * <p>Another description after blank line.
    *
+   * @return ConsumerRunnable .
    * @author admin
    */
   public ConsumerRunnable createConsumerRunnable() {
     return new ConsumerRunnable();
-  }
-  /**
-   * 消费者线程任务.
-   *
-   * <p>Another description after blank line.
-   *
-   * @author admin
-   */
-  public class ConsumerRunnable implements Runnable {
-
-    /**
-     * 在执行业务之前,进行检查.
-     *
-     * <p>Another description after blank line.
-     *
-     * @author admin
-     */
-    @Override
-    public void run() {
-      // 重新获取队列元素数.
-      int size = fileQueue.size();
-      // 如果队列为空,不执行业务.
-      if (size != 0) {
-        // 如果元素数大于flushCount(默认100),则每次获取100条.否则直接获取全部元素.
-        process(Math.min(size, Constants.FLUSH_COUNT));
-      }
-    }
   }
 
   /**
@@ -278,6 +251,7 @@ public class FileHandlerV2 extends AbstractHandler {
    *
    * <p>Another description after blank line.
    *
+   * @param size .
    * @author admin
    */
   public void process(final int size) {
@@ -357,7 +331,43 @@ public class FileHandlerV2 extends AbstractHandler {
     }
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return FileQueue .
+   * @author admin
+   */
   public FileQueue getFileQueue() {
     return fileQueue;
+  }
+
+  /**
+   * 消费者线程任务.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
+  public class ConsumerRunnable implements Runnable {
+
+    /**
+     * 在执行业务之前,进行检查.
+     *
+     * <p>Another description after blank line.
+     *
+     * @author admin
+     */
+    @Override
+    public void run() {
+      // 重新获取队列元素数.
+      int size = fileQueue.size();
+      // 如果队列为空,不执行业务.
+      if (size != 0) {
+        // 如果元素数大于flushCount(默认100),则每次获取100条.否则直接获取全部元素.
+        process(Math.min(size, Constants.FLUSH_COUNT));
+      }
+    }
   }
 }

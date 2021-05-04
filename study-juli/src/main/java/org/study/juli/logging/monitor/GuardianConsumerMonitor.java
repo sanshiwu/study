@@ -3,7 +3,6 @@ package org.study.juli.logging.monitor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.context.WorkerContext;
 import org.study.juli.logging.runnable.GuardianConsumerMonitorRunnable;
 

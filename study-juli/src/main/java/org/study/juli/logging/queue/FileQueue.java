@@ -17,6 +17,7 @@ public class FileQueue extends AbstractQueue<LogRecord> {
    *
    * <p>Another description after blank line.
    *
+   * @param target .
    * @author admin
    */
   public FileQueue(final String target) {
@@ -28,6 +29,8 @@ public class FileQueue extends AbstractQueue<LogRecord> {
    *
    * <p>Another description after blank line.
    *
+   * @param capacity .
+   * @param target .
    * @author admin
    */
   public FileQueue(final int capacity, final String target) {
@@ -39,6 +42,7 @@ public class FileQueue extends AbstractQueue<LogRecord> {
    *
    * <p>Another description after blank line.
    *
+   * @param e .
    * @author admin
    */
   public void enqueue(final LogRecord e) {
@@ -76,10 +80,12 @@ public class FileQueue extends AbstractQueue<LogRecord> {
    *
    * <p>Another description after blank line.
    *
+   * @param logRecord .
+   * @return ProducerRunnable .
    * @author admin
    */
-  public ProducerRunnable createProducerRunnable(final LogRecord record) {
-    return new ProducerRunnable(record);
+  public ProducerRunnable createProducerRunnable(final LogRecord logRecord) {
+    return new ProducerRunnable(logRecord);
   }
 
   /**
@@ -87,6 +93,7 @@ public class FileQueue extends AbstractQueue<LogRecord> {
    *
    * <p>Another description after blank line.
    *
+   * @return StudyHandler LogRecord .
    * @author admin
    */
   public StudyHandler<LogRecord> createProducerWorker() {
@@ -115,18 +122,18 @@ public class FileQueue extends AbstractQueue<LogRecord> {
   public class ProducerRunnable implements Runnable {
 
     /** 生产一个元素. */
-    protected LogRecord record;
+    protected LogRecord logRecord;
 
     /**
      * This is a method description.
      *
      * <p>Another description after blank line.
      *
-     * @param record 放入队列中的元素.
+     * @param logRecord 放入队列中的元素.
      * @author admin
      */
-    public ProducerRunnable(final LogRecord record) {
-      this.record = record;
+    public ProducerRunnable(final LogRecord logRecord) {
+      this.logRecord = logRecord;
     }
 
     /**
@@ -138,7 +145,7 @@ public class FileQueue extends AbstractQueue<LogRecord> {
      */
     @Override
     public void run() {
-      enqueue(record);
+      enqueue(logRecord);
     }
   }
 
@@ -156,12 +163,12 @@ public class FileQueue extends AbstractQueue<LogRecord> {
      *
      * <p>Another description after blank line.
      *
-     * @param record 放入队列中的元素.
+     * @param logRecord 放入队列中的元素.
      * @author admin
      */
     @Override
-    public void handle(final LogRecord record) {
-      enqueue(record);
+    public void handle(final LogRecord logRecord) {
+      enqueue(logRecord);
     }
   }
 }

@@ -1,7 +1,7 @@
 package org.study.juli.examples.example3;
 
-import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
+import org.study.juli.logging.spi.Log;
 
 /**
  * This is a class description.
@@ -21,6 +21,9 @@ public class Examples3 {
     log.fatal("Examples3>fatal>>>>我要去的日志文件是3study,当前的日志计数是:{}", "" + i);
     log.debug("Examples3>debug>>>>我要去的日志文件是3study,当前的日志计数是:{}", "" + i);
     log.trace("Examples3>trace>>>>我要去的日志文件是3study,当前的日志计数是:{}", "" + i);
-    log.error("Examples>error>>>>我要去的日志文件是3study,当前的日志计数是:{}", "" + i, new RuntimeException("我要去的日志文件是3study"));
+    log.error(
+        "Examples>error>>>>我要去的日志文件是3study,当前的日志计数是:{}",
+        "" + i,
+        new RuntimeException("我要去的日志文件是3study"));
   }
 }

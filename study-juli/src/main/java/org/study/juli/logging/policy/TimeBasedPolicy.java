@@ -6,11 +6,18 @@ package org.study.juli.logging.policy;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-06 14:20
- * @since 2021-04-06 14:20:00
  */
 public class TimeBasedPolicy extends AbstractPolicy {
 
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @return  boolean .
+   * @author admin
+   */
   @Override
   public boolean getAsBoolean() {
     return false;

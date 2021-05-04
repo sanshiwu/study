@@ -104,6 +104,7 @@ public final class StudyThread extends Thread {
    *
    * <p>Another description after blank line.
    *
+   * @return String
    * @author admin
    */
   public String getUnique() {
@@ -115,9 +116,10 @@ public final class StudyThread extends Thread {
    *
    * <p>Another description after blank line.
    *
+   * @param unique .
    * @author admin
    */
-  public void setUnique(String unique) {
+  public void setUnique(final String unique) {
     this.unique = unique;
   }
 
@@ -178,6 +180,7 @@ public final class StudyThread extends Thread {
   /**
    * 当线程开始时,开始时间设置成当前系统的时间戳毫秒数.
    *
+   * @param unique .
    * @author admin
    */
   private void executeStartV2(final String unique) {
@@ -205,10 +208,11 @@ public final class StudyThread extends Thread {
    *
    * <p>代表线程正在运行着.
    *
+   * @param unique .
    * @param contextParam 上下文对象.
    * @author admin
    */
-  public void beginEmissionV2(final String unique,final StudyContext contextParam) {
+  public void beginEmissionV2(final String unique, final StudyContext contextParam) {
     // 设置执行开始时间.
     executeStartV2(unique);
     // 设置上下文.

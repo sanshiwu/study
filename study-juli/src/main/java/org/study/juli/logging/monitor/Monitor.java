@@ -20,7 +20,7 @@ public interface Monitor {
    * @param context 上下文.
    * @author admin
    */
-  void monitor(final WorkerContext context);
+  void monitor(WorkerContext context);
 
   /**
    * This is a method description.
@@ -30,7 +30,8 @@ public interface Monitor {
    * @param thread 线程.
    * @author admin
    */
-  default void registerThread(final StudyThread thread) {
+  default void registerThread(StudyThread thread) {
+    //
   }
 
   /**

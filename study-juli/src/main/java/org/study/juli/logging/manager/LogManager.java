@@ -13,8 +13,6 @@ import org.study.juli.logging.logger.JuliLogger;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-01 13:48
- * @since 2021-04-01 13:48:00
  */
 public interface LogManager {
 
@@ -23,6 +21,8 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @param logger .
+   * @return b.
    * @author admin
    */
   boolean addLogger(JuliLogger logger);
@@ -32,6 +32,8 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @param name .
+   * @return JuliLogger.
    * @author admin
    */
   JuliLogger getLogger(String name);
@@ -41,6 +43,7 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @return Enumeration.
    * @author admin
    */
   Enumeration<String> getLoggerNames();
@@ -50,6 +53,8 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @param name .
+   * @return String.
    * @author admin
    */
   String getProperty(String name);
@@ -59,24 +64,9 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
-   * @author admin
-   */
-  void readConfiguration() throws SecurityException;
-
-  /**
-   * This is a method description.
-   *
-   * <p>Another description after blank line.
-   *
-   * @author admin
-   */
-  void reset() throws SecurityException;
-
-  /**
-   * This is a method description.
-   *
-   * <p>Another description after blank line.
-   *
+   * @param ins .
+   * @throws IOException .
+   * @throws SecurityException .
    * @author admin
    */
   void readConfiguration(InputStream ins) throws IOException, SecurityException;
@@ -86,6 +76,28 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @throws SecurityException .
+   * @author admin
+   */
+  void readConfiguration() throws SecurityException;
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @throws SecurityException .
+   * @author admin
+   */
+  void reset() throws SecurityException;
+
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param mapper .
+   * @throws IOException .
    * @author admin
    */
   void updateConfiguration(Function<String, BiFunction<String, String, String>> mapper)
@@ -96,6 +108,9 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @param ins .
+   * @param mapper .
+   * @throws IOException .
    * @author admin
    */
   void updateConfiguration(
@@ -107,6 +122,7 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @throws SecurityException .
    * @author admin
    */
   void checkAccess() throws SecurityException;
@@ -116,6 +132,8 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @param listener .
+   * @return AbstractLogManager
    * @author admin
    */
   AbstractLogManager addConfigurationListener(Runnable listener);
@@ -125,6 +143,7 @@ public interface LogManager {
    *
    * <p>Another description after blank line.
    *
+   * @param listener .
    * @author admin
    */
   void removeConfigurationListener(Runnable listener);

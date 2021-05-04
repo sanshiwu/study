@@ -2,33 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.study</groupId>
   <artifactId>study</artifactId>
-  <version>2020</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>study-juli</module>
-    <module>study-agent</module>
-    <module>study-examples</module>
-    <module>study-doc</module>
-    <module>study-cli</module>
-    <module>study-dist</module>
-  </modules>
-  <properties>
-    <!--  1:统一字符集编码UTF-8 -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <!-- 默认直接读取系统参数配置的jdk版本. -->
-    <!--
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
-    -->
-  </properties>
-  <dependencyManagement>
-    <!--  1:统一管理依赖版本 -->
-  </dependencyManagement>
   <build>
     <pluginManagement>
       <!--  1:统一管理插件版本 -->
@@ -45,12 +19,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <!--  1:使用jdk11进行编译,直接使用系统参数-->
-          <encoding>UTF-8</encoding>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <compilerVersion>${java.version}</compilerVersion>
-          <!-- 如果我们的代码想要访问JDK模块化的代码,可以使用下面的选项.-->
-          <!-- ALL-UNNAMED未命名的意思是开放给所有的包访问,如果想固定给某个包的话,填写对应的包名即可.-->
           <compilerArgs>
             <arg>--add-exports=java.base/jdk.internal.loader=ALL-UNNAMED</arg>
             <arg>--add-exports=java.base/jdk.internal.logger=ALL-UNNAMED</arg>
@@ -59,6 +27,12 @@
             <arg>--add-exports=java.base/sun.util.logging=ALL-UNNAMED</arg>
             <arg>--add-exports=java.base/sun.util.logging=ALL-UNNAMED</arg>
           </compilerArgs>
+          <compilerVersion>${java.version}</compilerVersion>
+          <encoding>UTF-8</encoding>
+          <source>${java.version}</source>
+          <!-- 如果我们的代码想要访问JDK模块化的代码,可以使用下面的选项.-->
+          <!-- ALL-UNNAMED未命名的意思是开放给所有的包访问,如果想固定给某个包的话,填写对应的包名即可.-->
+          <target>${java.version}</target>
         </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.8.1</version>
@@ -104,12 +78,15 @@
         <version>2.22.2</version>
       </plugin>
       <plugin>
-        <!-- 代码样式检测-->
+        <!-- 代码样式检测. -->
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <!-- core配置文件-->
-          <configLocation>checkstyle.xml</configLocation>
-          <!-- -->
+          <!-- 官方规范地址: https://checkstyle.org/ -->
+          <!-- 使用google规范. -->
+          <configLocation>checkstyle/google/google_checks.xml</configLocation>
+          <!-- 使用sun规范. -->
+          <!--<configLocation>checkstyle/sun/sun_checks.xml</configLocation>-->
+          <encoding>UTF-8</encoding>
           <failOnViolation>true</failOnViolation>
           <!-- 是否对test目录中的代码进行检查-->
           <includeTestSourceDirectory>false</includeTestSourceDirectory>
@@ -118,8 +95,16 @@
           <!-- 检测结果输出到控制台-->
           <logViolationsToConsole>true</logViolationsToConsole>
           <!-- -->
-          <suppressionsLocation>suppressions.xml</suppressionsLocation>
+          <suppressionsLocation>checkstyle/google/checkstyle-suppressions.xml</suppressionsLocation>
         </configuration>
+        <dependencies>
+          <dependency>
+            <!-- 使用指定版本的checkstyle. -->
+            <artifactId>checkstyle</artifactId>
+            <groupId>com.puppycrawl.tools</groupId>
+            <version>8.42</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <goals>
@@ -135,8 +120,36 @@
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.0</version>
+        <version>3.1.2</version>
       </plugin>
     </plugins>
   </build>
+  <dependencyManagement>
+    <!--  1:统一管理依赖版本 -->
+  </dependencyManagement>
+  <groupId>org.study</groupId>
+  <modelVersion>4.0.0</modelVersion>
+  <modules>
+    <module>study-juli</module>
+    <module>study-agent</module>
+    <module>study-examples</module>
+    <module>study-doc</module>
+    <module>study-cli</module>
+    <module>study-dist</module>
+    <module>study-juli-api</module>
+    <module>study-juli-core</module>
+  </modules>
+  <packaging>pom</packaging>
+  <properties>
+    <!--  1:统一字符集编码UTF-8 -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- 默认直接读取系统参数配置的jdk版本. -->
+    <!--
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
+    -->
+  </properties>
+  <version>2020</version>
 </project>

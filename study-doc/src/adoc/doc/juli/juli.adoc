@@ -243,7 +243,7 @@ include::{docdir}/study-examples/study-juli-examples/src/main/resources/logging.
 [source]
 .SPI.
 ----
-include::{docdir}/study-examples/study-juli-examples/src/main/resources/META-INF/services/org.study.juli.logging.base.Log[]
+include::{docdir}/study-examples/study-juli-examples/src/main/resources/META-INF/services/org.study.juli.logging.spi.Log[]
 ----
 
 == Quick start
@@ -431,7 +431,7 @@ Take log4j2 as an example: value is `org.study.juli.examples.Log4j2`
 
 [source,properties]
 ----
-include::{docdir}/study-examples/study-juli-spi-examples/src/main/resources/META-INF/services/org.study.juli.logging.base.Log[]
+include::{docdir}/study-examples/study-juli-spi-examples/src/main/resources/META-INF/services/org.study.juli.logging.spi.Log[]
 ----
 
 Take log4j2 as an example:
@@ -477,7 +477,7 @@ If you want to use asynchronous processors, don't forget system properties:
 [source,java]
 .Log.
 ----
-include::{docdir}/study-juli/src/main/java/org/study/juli/logging/base/Log.java[]
+include::{docdir}/study-juli/src/main/java/org/study/juli/logging/spi/Log.java[]
 ----
 
 == Appendix: Dependencies Versions

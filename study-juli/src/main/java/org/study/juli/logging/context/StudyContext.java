@@ -21,7 +21,7 @@ public interface StudyContext {
    * @param <T> .
    * @author admin
    */
-  <T> void dispatch(final T event, final StudyHandler<T> handler);
+  <T> void dispatch(T event, StudyHandler<T> handler);
 
   /**
    * This is a method description.
@@ -31,7 +31,7 @@ public interface StudyContext {
    * @param handler .
    * @author admin
    */
-  void dispatch(final Runnable handler);
+  void dispatch(Runnable handler);
 
   /**
    * This is a method description.
@@ -62,16 +62,17 @@ public interface StudyContext {
    * @param <T> .
    * @author admin
    */
-  <T> void dispatchV2(final String unique, final T event, final StudyHandler<T> handler);
+  <T> void dispatchV2(String unique, T event, StudyHandler<T> handler);
 
   /**
    * This is a method description.
    *
    * <p>Another description after blank line.
    *
+   * @param unique .
    * @author admin
    */
-  void beginDispatchV2(final String unique);
+  void beginDispatchV2(String unique);
 
   /**
    * This is a method description.

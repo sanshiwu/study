@@ -20,7 +20,7 @@ public interface WorkerContext {
    * @param task 任务.
    * @author admin
    */
-  void executeInExecutorService(final Runnable task);
+  void executeInExecutorService(Runnable task);
 
   /**
    * This is a method description.
@@ -32,7 +32,7 @@ public interface WorkerContext {
    * @param <T> 传入handler的元素.
    * @author admin
    */
-  <T> void executeInExecutorService(final T event, final StudyHandler<T> handler);
+  <T> void executeInExecutorService(T event, StudyHandler<T> handler);
 
   /**
    * This is a method description.
@@ -55,6 +55,5 @@ public interface WorkerContext {
    * @param <T> 传入handler的元素.
    * @author admin
    */
-  <T> void executeInExecutorServiceV2(
-      final String unique, final T event, final StudyHandler<T> handler);
+  <T> void executeInExecutorServiceV2(String unique, T event, StudyHandler<T> handler);
 }

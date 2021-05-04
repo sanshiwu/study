@@ -10,8 +10,6 @@ import org.study.juli.logging.manager.ClassLoaderLogInfo;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-05 09:19
- * @since 2021-04-05 09:19:00
  */
 public final class LogManagerUtils {
 
@@ -19,7 +17,17 @@ public final class LogManagerUtils {
     //
   }
 
-  public static String getProperty(String key, String value) {
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param key .
+   * @param value .
+   * @return String .
+   * @author admin
+   */
+  public static String getProperty(final String key, final String value) {
     // 获取全局的日志管理器.
     final AbstractLogManager manager = AbstractLogManager.getLogManager();
     // 获取日志管理器存储的所有ClassLoader.

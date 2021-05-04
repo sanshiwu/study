@@ -25,6 +25,7 @@ public interface StudyQueue<T> {
    *
    * <p>Another description after blank line.
    *
+   * @return T .
    * @author admin
    */
   T poll();

@@ -52,8 +52,15 @@ public class Log4j2 implements Log {
     logger.info(message, args);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
-  public void info(String message) {
+  public void info(final String message) {
     logger.info(message);
   }
 
@@ -70,8 +77,15 @@ public class Log4j2 implements Log {
     logger.debug(message, args);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
-  public void debug(String message) {
+  public void debug(final String message) {
     logger.debug(message);
   }
 
@@ -88,8 +102,15 @@ public class Log4j2 implements Log {
     logger.trace(message, args);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
-  public void trace(String message) {
+  public void trace(final String message) {
     logger.trace(message);
   }
 
@@ -106,8 +127,15 @@ public class Log4j2 implements Log {
     logger.warn(message, args);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
-  public void warn(String message) {
+  public void warn(final String message) {
     logger.warn(message);
   }
 
@@ -124,8 +152,15 @@ public class Log4j2 implements Log {
     logger.error(message, args);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
-  public void error(String message) {
+  public void error(final String message) {
     logger.error(message);
   }
 
@@ -142,8 +177,15 @@ public class Log4j2 implements Log {
     logger.fatal(message, args);
   }
 
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
-  public void fatal(String message) {
+  public void fatal(final String message) {
     logger.fatal(message);
   }
 }

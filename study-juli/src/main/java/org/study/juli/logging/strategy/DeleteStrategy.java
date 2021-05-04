@@ -11,15 +11,28 @@ import org.study.juli.logging.exception.StudyJuliRuntimeException;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-06 14:59
- * @since 2021-04-06 14:59:00
  */
 public class DeleteStrategy extends AbstractStrategy {
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   public DeleteStrategy() {
     //
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @param source .
+   * @author admin
+   */
   public void delete(final File source) {
     try {
       Files.delete(source.toPath());

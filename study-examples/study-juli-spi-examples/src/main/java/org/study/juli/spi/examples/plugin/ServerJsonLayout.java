@@ -26,9 +26,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
     printObject = true)
 public class ServerJsonLayout extends AbstractStringLayout {
 
-  /**
-   * .
-   */
+  /** . */
   private final PatternLayout patternLayout;
 
   /**
@@ -36,6 +34,8 @@ public class ServerJsonLayout extends AbstractStringLayout {
    *
    * <p>Another description after blank line.
    *
+   * @param type .
+   * @param charset .
    * @author admin
    */
   protected ServerJsonLayout(final String type, final Charset charset) {
@@ -51,7 +51,7 @@ public class ServerJsonLayout extends AbstractStringLayout {
    * This is a method description.
    *
    * @param typeName This is a param description.
-   * @param charset  This is a param description.
+   * @param charset This is a param description.
    * @return This is a return description.
    * @author admin
    */
@@ -67,6 +67,8 @@ public class ServerJsonLayout extends AbstractStringLayout {
    *
    * <p>Another description after blank line.
    *
+   * @param type .
+   * @return Sting .
    * @author admin
    */
   private String pattern(final String type) {
@@ -84,6 +86,8 @@ public class ServerJsonLayout extends AbstractStringLayout {
    *
    * <p>Another description after blank line.
    *
+   * @param map .
+   * @return String .
    * @author admin
    */
   private String createPattern(final Map<String, Object> map) {

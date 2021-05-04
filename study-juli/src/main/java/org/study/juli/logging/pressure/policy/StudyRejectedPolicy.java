@@ -6,7 +6,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.utils.LogManagerUtils;
 
 /**
@@ -17,9 +16,9 @@ import org.study.juli.logging.utils.LogManagerUtils;
  * @author admin
  */
 public class StudyRejectedPolicy implements RejectedExecutionHandler {
-
+  /** . */
   private final ReentrantLock lock = new ReentrantLock();
-
+  /** . */
   private final Condition condition = lock.newCondition();
 
   /**
@@ -28,10 +27,12 @@ public class StudyRejectedPolicy implements RejectedExecutionHandler {
    *
    * <p>Another description after blank line.
    *
+   * @param r .
+   * @param e .
    * @author admin
    */
   @Override
-  public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+  public void rejectedExecution(final Runnable r, final ThreadPoolExecutor e) {
     // 如果线程池关闭了,直接返回.
     if (e.isShutdown()) {
       return;

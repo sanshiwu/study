@@ -2,28 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.study</groupId>
-    <artifactId>study</artifactId>
-    <version>2020</version>
-  </parent>
   <artifactId>study-doc</artifactId>
-  <version>2020</version>
-  <packaging>pom</packaging>
-  <properties>
-    <!-- basedir 就是当前项目的根目录, 当前配置代表study/study-doc. -->
-    <!-- adoc源码文件夹 -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <!-- java源码文件夹 -->
-    <!--<study-doc.src>/study/study-examples</study-doc.src>-->
-    <!-- adoc输出文件夹,Java源码不编译,给adoc作为资源使用. -->
-    <study-doc.asciidoc>${project.basedir}/src/adoc</study-doc.asciidoc>
-    <!--  1:统一字符集编码UTF-8 -->
-    <study-doc.resources>${project.basedir}/src/resources</study-doc.resources>
-    <study-doc.target>${project.basedir}/target</study-doc.target>
-  </properties>
   <build>
     <defaultGoal>process-resources</defaultGoal>
     <plugins>
@@ -172,4 +151,25 @@
       </plugin>
     </plugins>
   </build>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+  <parent>
+    <artifactId>study</artifactId>
+    <groupId>org.study</groupId>
+    <version>2020</version>
+  </parent>
+  <properties>
+    <!-- basedir 就是当前项目的根目录, 当前配置代表study/study-doc. -->
+    <!-- adoc源码文件夹 -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- java源码文件夹 -->
+    <!--<study-doc.src>/study/study-examples</study-doc.src>-->
+    <!-- adoc输出文件夹,Java源码不编译,给adoc作为资源使用. -->
+    <study-doc.asciidoc>${project.basedir}/src/adoc</study-doc.asciidoc>
+    <!--  1:统一字符集编码UTF-8 -->
+    <study-doc.resources>${project.basedir}/src/resources</study-doc.resources>
+    <study-doc.target>${project.basedir}/target</study-doc.target>
+  </properties>
+  <version>2020</version>
 </project>

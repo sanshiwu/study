@@ -2,26 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.study</groupId>
-    <artifactId>study-agent-examples</artifactId>
-    <version>2020</version>
-  </parent>
   <artifactId>study-agent-examples-first</artifactId>
-  <dependencies>
-    <dependency>
-      <artifactId>javassist</artifactId>
-      <groupId>org.javassist</groupId>
-      <version>3.22.0-GA</version>
-    </dependency>
-    <dependency>
-      <artifactId>study-juli</artifactId>
-      <groupId>org.study</groupId>
-      <scope>compile</scope>
-      <version>2020</version>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -37,4 +18,23 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <artifactId>javassist</artifactId>
+      <groupId>org.javassist</groupId>
+      <version>3.22.0-GA</version>
+    </dependency>
+    <dependency>
+      <artifactId>study-juli</artifactId>
+      <groupId>org.study</groupId>
+      <scope>compile</scope>
+      <version>2020</version>
+    </dependency>
+  </dependencies>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>study-agent-examples</artifactId>
+    <groupId>org.study</groupId>
+    <version>2020</version>
+  </parent>
 </project>

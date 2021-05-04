@@ -42,7 +42,15 @@ public class ClassLoaderLogInfo {
     rootLogger.addHandler(handler);
   }
 
-  public void setLevel(String name) {
+  /**
+   * .
+   *
+   * <p>.
+   *
+   * @param name .
+   * @author admin
+   */
+  public void setLevel(final String name) {
     rootLogger.setLevel(Level.findLevel(name));
   }
 }

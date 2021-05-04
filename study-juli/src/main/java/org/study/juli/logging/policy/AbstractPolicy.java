@@ -6,10 +6,17 @@ package org.study.juli.logging.policy;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-06 14:19
- * @since 2021-04-06 14:19:00
  */
 public abstract class AbstractPolicy implements Policy {
+
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return boolean .
+   * @author admin
+   */
   @Override
   public boolean isTriggeringEvent() {
     return false;

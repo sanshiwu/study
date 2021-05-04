@@ -2,29 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.study</groupId>
-    <artifactId>study</artifactId>
-    <version>2020</version>
-  </parent>
   <artifactId>study-examples</artifactId>
-  <version>2020</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>study-agent-examples</module>
-    <module>study-juli-examples</module>
-    <module>study-juli-spi-examples</module>
-    <module>study-web-examples</module>
-  </modules>
-  <properties>
-    <!--  1:统一字符集编码UTF-8 -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-  </properties>
-  <dependencyManagement>
-    <!--  1:统一管理依赖版本 -->
-  </dependencyManagement>
   <build>
     <pluginManagement>
       <!--  1:统一管理插件版本 -->
@@ -98,4 +76,27 @@
       </plugin>
     </plugins>
   </build>
+  <dependencyManagement>
+    <!--  1:统一管理依赖版本 -->
+  </dependencyManagement>
+  <modelVersion>4.0.0</modelVersion>
+  <modules>
+    <module>study-agent-examples</module>
+    <module>study-juli-examples</module>
+    <module>study-juli-spi-examples</module>
+    <module>study-web-examples</module>
+    <module>study-juli-core-examples</module>
+  </modules>
+  <packaging>pom</packaging>
+  <parent>
+    <artifactId>study</artifactId>
+    <groupId>org.study</groupId>
+    <version>2020</version>
+  </parent>
+  <properties>
+    <!--  1:统一字符集编码UTF-8 -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  <version>2020</version>
 </project>

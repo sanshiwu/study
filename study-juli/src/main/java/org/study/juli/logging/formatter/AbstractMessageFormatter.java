@@ -2,7 +2,6 @@ package org.study.juli.logging.formatter;
 
 import java.text.MessageFormat;
 import java.util.Map;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.manager.AbstractLogManager;
 import org.study.juli.logging.manager.ClassLoaderLogInfo;
@@ -13,8 +12,6 @@ import org.study.juli.logging.manager.ClassLoaderLogInfo;
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-03-27 10:50
- * @since 2021-03-27 10:50:00
  */
 public abstract class AbstractMessageFormatter implements Formatter {
 
@@ -27,11 +24,13 @@ public abstract class AbstractMessageFormatter implements Formatter {
    *
    * <p>对新的日志格式来说,性能上几乎0损耗,运行1亿方法,耗时5毫秒.
    *
+   * @param logRecord .
+   * @return String.
    * @author admin
    */
-  protected static String defaultFormat(final LogRecord record) {
-    String message = record.getMessage();
-    final Object[] parameters = record.getParameters();
+  protected static String defaultFormat(final LogRecord logRecord) {
+    String message = logRecord.getMessage();
+    final Object[] parameters = logRecord.getParameters();
     if (parameters != null && parameters.length != 0) {
       int index = -1;
       final int fence = message.length() - 1;
@@ -53,6 +52,7 @@ public abstract class AbstractMessageFormatter implements Formatter {
    *
    * <p>Another description after blank line.
    *
+   * @return boolean .
    * @author admin
    */
   protected static boolean checkUnique() {

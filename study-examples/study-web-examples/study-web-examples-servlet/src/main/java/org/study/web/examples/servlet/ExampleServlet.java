@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ExampleServlet extends HttpServlet {
 
+  private static final long serialVersionUID = -1L;
+
   /**
    * This is a method description.
    *

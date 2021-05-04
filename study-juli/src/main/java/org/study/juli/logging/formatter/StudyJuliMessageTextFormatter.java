@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.core.LogRecord;
 import org.study.juli.logging.manager.AbstractLogManager;
 import org.study.juli.logging.utils.LogManagerUtils;
@@ -68,16 +67,14 @@ public class StudyJuliMessageTextFormatter extends AbstractMessageFormatter {
    *
    * <p>Another description after blank line.
    *
-   * @param record 需要格式化的消息.
+   * @param logRecord 需要格式化的消息.
    * @return 返回格式化后的消息.
    * @author admin
    */
   @Override
-  public String format(final LogRecord record) {
-    // 首先兼容JDK原生的日志格式,然后进行格式化处理.
-    String message = defaultFormat(record);
+  public String format(final LogRecord logRecord) {
     // UTC时区获取当前系统的日期.
-    final ZonedDateTime zdt = ZonedDateTime.ofInstant(record.getInstant(), ZoneOffset.UTC);
+    final ZonedDateTime zdt = ZonedDateTime.ofInstant(logRecord.getInstant(), ZoneOffset.UTC);
     // 日期格式化.
     final String format = this.pattern.format(zdt);
     // 组装完整的日志消息.100->16试试看.
@@ -86,7 +83,7 @@ public class StudyJuliMessageTextFormatter extends AbstractMessageFormatter {
     sb.append(format);
     sb.append(' ');
     // 日志级别.
-    sb.append(record.getLevel().getName());
+    sb.append(logRecord.getLevel().getName());
     sb.append(' ');
     sb.append('[');
     // 当前执行的线程名.
@@ -94,54 +91,56 @@ public class StudyJuliMessageTextFormatter extends AbstractMessageFormatter {
     sb.append(']');
     sb.append(' ');
     // 日志由哪个类打印的.
-    sb.append(record.getSourceClassName());
+    sb.append(logRecord.getSourceClassName());
     sb.append(' ');
     // 日志由哪个方法打印的.
-    sb.append(record.getSourceMethodName());
+    sb.append(logRecord.getSourceMethodName());
     sb.append(' ');
     // 日志方法行.
-    sb.append(record.getLineNumber());
+    sb.append(logRecord.getLineNumber());
     sb.append(' ');
     final String unique = LogManagerUtils.getProperty(Constants.UNIQUE, Constants.FALSE);
     if (unique.equals(Constants.TRUE)) {
       // 日志unique id.
-      sb.append(record.getUniqueId());
+      sb.append(logRecord.getUniqueId());
       sb.append(' ');
     }
     // 日志序列号.
-    sb.append(record.getSerialNumber());
+    sb.append(logRecord.getSerialNumber());
     sb.append(' ');
-    String host = record.getHost();
+    String host = logRecord.getHost();
     if (Objects.nonNull(host)) {
       // 日志进程host.
       sb.append(host);
       sb.append(' ');
     }
-    String port = record.getPort();
+    String port = logRecord.getPort();
     if (Objects.nonNull(port)) {
       // 日志进程port.
       sb.append(port);
       sb.append(' ');
     }
     // 日志自定义字段.
-    Map<String, String> customs = record.getCustoms();
+    final Map<String, String> customs = logRecord.getCustoms();
     for (Entry<String, String> entry : customs.entrySet()) {
       String value = entry.getValue();
       sb.append(value);
       sb.append(' ');
     }
+    // 首先兼容JDK原生的日志格式,然后进行格式化处理.
+    final String message = defaultFormat(logRecord);
     // 已经格式化后的日志消息.
     sb.append(message);
     // 如果有异常堆栈信息,则打印出来.
-    Throwable thrown = record.getThrown();
+    final Throwable thrown = logRecord.getThrown();
     if (thrown != null) {
       sb.append(' ');
       sb.append('[');
       sb.append(thrown.toString());
       sb.append(",");
       String separator = "";
-      StackTraceElement[] stackTraceElements = thrown.getStackTrace();
-      for (StackTraceElement stackTraceElement : stackTraceElements) {
+      final StackTraceElement[] stackTraceElements = thrown.getStackTrace();
+      for (final StackTraceElement stackTraceElement : stackTraceElements) {
         sb.append(separator);
         sb.append(stackTraceElement.toString());
         separator = ",";

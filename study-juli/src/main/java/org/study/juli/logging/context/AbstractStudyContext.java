@@ -142,7 +142,7 @@ public abstract class AbstractStudyContext implements StudyContext {
       // 得到当前真实线程.
       StudyThread th = (StudyThread) thread;
       // 设置开始时间和当前上下文对象.
-      th.beginEmissionV2(unique,this);
+      th.beginEmissionV2(unique, this);
     }
   }
 
@@ -165,5 +165,4 @@ public abstract class AbstractStudyContext implements StudyContext {
       th.endEmissionV2();
     }
   }
-
 }

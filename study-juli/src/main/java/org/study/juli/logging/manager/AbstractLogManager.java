@@ -9,45 +9,46 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.study.juli.logging.base.Constants;
 import org.study.juli.logging.exception.StudyJuliRuntimeException;
 import org.study.juli.logging.handler.Handler;
 import org.study.juli.logging.logger.JuliLogger;
 import org.study.juli.logging.utils.ClassLoadingUtils;
 
 /**
- * This is a class description.
+ * This is a class description(需要优化).
  *
  * <p>Another description after blank line.
  *
  * @author admin
- * @version 2021-04-01 10:58
- * @since 2021-04-01 10:58:00
  */
 public abstract class AbstractLogManager implements LogManager {
+  /** . */
   private static final AbstractLogManager ABSTRACT_LOGMANAGER;
+
+  static {
+    String logManagerName =
+        System.getProperty(Constants.LOG_MANAGER, Constants.STUDY_JULI_LOG_MANAGER);
+    Constructor<?> constructor = ClassLoadingUtils.constructor(logManagerName);
+    ABSTRACT_LOGMANAGER = (AbstractLogManager) ClassLoadingUtils.newInstance(constructor);
+  }
+
   /** 自定义类加载器,目前只支持系统类加载器,不支持自定义类加载器. */
   public final Map<ClassLoader, ClassLoaderLogInfo> classLoaderLoggers = new WeakHashMap<>(1);
   /** 给线程绑定一个线程变量,目前阿里插件扫描到没有调用remove方法释放,实际已经调用. */
   protected final ThreadLocal<String> prefix = new ThreadLocal<>();
   /** 自定义锁,用于在对配置文件CRUD时锁定业务方法. */
   protected final ReentrantLock configurationLock = new ReentrantLock();
-
+  /** 日志管理器初始化的标识. */
   protected boolean initializationDone;
 
-  static {
-    String logManagerName =
-        System.getProperty(Constants.LOG_MANAGER, Constants.STUDY_JULI_LOG_MANAGER);
-    AbstractLogManager lm;
-    try {
-      Constructor<?> constructor = ClassLoadingUtils.constructor(logManagerName);
-      lm = (AbstractLogManager) constructor.newInstance();
-    } catch (Exception e) {
-      throw new StudyJuliRuntimeException(e);
-    }
-    ABSTRACT_LOGMANAGER = lm;
-  }
-
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return AbstractLogManager.
+   * @author admin
+   */
   public static AbstractLogManager getLogManager() {
     if (ABSTRACT_LOGMANAGER == null) {
       throw new StudyJuliRuntimeException("");
@@ -56,59 +57,136 @@ public abstract class AbstractLogManager implements LogManager {
     return ABSTRACT_LOGMANAGER;
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return AbstractLogManager.
+   * @author admin
+   */
   @Override
-  public boolean addLogger(JuliLogger logger) {
+  public boolean addLogger(final JuliLogger logger) {
+
     return false;
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return AbstractLogManager.
+   * @author admin
+   */
   @Override
-  public JuliLogger getLogger(String name) {
+  public JuliLogger getLogger(final String name) {
+
     return null;
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return AbstractLogManager.
+   * @author admin
+   */
   @Override
   public Enumeration<String> getLoggerNames() {
+
     return null;
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return AbstractLogManager.
+   * @author admin
+   */
   @Override
-  public String getProperty(String name) {
+  public String getProperty(final String name) {
+
     return null;
   }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @author admin
+   */
   @Override
-  public void readConfiguration() throws SecurityException {}
+  public void readConfiguration() throws SecurityException {
+    //
+  }
 
   @Override
-  public void reset() throws SecurityException {}
+  public void readConfiguration(final InputStream ins) throws IOException, SecurityException {
+    //
+  }
 
   @Override
-  public void readConfiguration(InputStream ins) throws IOException, SecurityException {}
+  public void reset() throws SecurityException {
+    //
+  }
 
   @Override
-  public void updateConfiguration(Function<String, BiFunction<String, String, String>> mapper)
-      throws IOException {}
+  public void updateConfiguration(final Function<String, BiFunction<String, String, String>> mapper)
+      throws IOException {
+    //
+  }
 
   @Override
   public void updateConfiguration(
-      InputStream ins, Function<String, BiFunction<String, String, String>> mapper)
-      throws IOException {}
+      final InputStream ins, final Function<String, BiFunction<String, String, String>> mapper)
+      throws IOException {
+    //
+  }
 
   @Override
-  public void checkAccess() throws SecurityException {}
+  public void checkAccess() throws SecurityException {
+    //
+  }
 
+  /**
+   * .
+   *
+   * <p>Another description after blank line.
+   *
+   * @return AbstractLogManager.
+   * @author admin
+   */
   @Override
-  public AbstractLogManager addConfigurationListener(Runnable listener) {
+  public AbstractLogManager addConfigurationListener(final Runnable listener) {
+
     return null;
   }
 
   @Override
-  public void removeConfigurationListener(Runnable listener) {}
+  public void removeConfigurationListener(final Runnable listener) {
+    //
+  }
 
   @Override
-  public void checkPermission() {}
+  public void checkPermission() {
+    //
+  }
 
-  public JuliLogger demandLogger(String name) {
+  /**
+   * This is a method description.
+   *
+   * <p>Another description after blank line.
+   *
+   * @param name .
+   * @return JuliLogger
+   * @author admin
+   */
+  public JuliLogger demandLogger(final String name) {
     JuliLogger result = getLogger(name);
     if (result == null) {
       JuliLogger newLogger = new JuliLogger(name, this);
@@ -155,7 +233,7 @@ public abstract class AbstractLogManager implements LogManager {
         this.prefix.set(prefixTem);
         // 反射创建一个处理器.
         Constructor<?> constructor = ClassLoadingUtils.constructor(handlerClassName);
-        final Handler handler = (Handler) constructor.newInstance();
+        final Handler handler = (Handler) ClassLoadingUtils.newInstance(constructor);
         // 将处理器添加到系统类加载内.
         info.handlers.putIfAbsent(handlerName, handler);
         return handler;

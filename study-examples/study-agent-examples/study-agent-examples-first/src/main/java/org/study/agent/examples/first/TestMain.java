@@ -10,8 +10,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import org.study.juli.logging.spi.Log;
 import org.study.juli.logging.base.LogFactory;
+import org.study.juli.logging.spi.Log;
 
 /**
  * This is a class description.
@@ -56,9 +56,10 @@ public class TestMain {
 
       // LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
       // final LocalDateTime now1 = LocalDateTime.now(Clock.systemDefaultZone());
-      //final DateTimeFormatter pattern1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss,SSSZZ");
-      //final String format1 = pattern1.format(now1);
-      //System.out.println(format1);
+      // final DateTimeFormatter pattern1 =
+      // DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss,SSSZZ");
+      // final String format1 = pattern1.format(now1);
+      // System.out.println(format1);
 
       TestMain.initializeStatic566(222, "ddd", "xxx", "aaa");
       final Abc abc = new TestMain1122();
@@ -131,7 +132,8 @@ public class TestMain {
     return props;
   }
 
-  private static Properties initializeStatic566(final int id, final String abc, final String abc222, final String abc2223) {
+  private static Properties initializeStatic566(
+      final int id, final String abc, final String abc222, final String abc2223) {
     final Properties props = new Properties();
     props.put("security.provider.1", "sun.security.provider.Sun");
     props.put("security.provider.2", "sun.security.rsa.SunRsaSign");

@@ -48,7 +48,7 @@ public class Examples {
     long s = System.currentTimeMillis();
     ExamplesWorker examplesWorker = new ExamplesWorker();
     // 1000个任务,会生成35W条日志.
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 1000000; i++) {
       // 参数传递一个唯一消息ID.子线程也可以利用这个唯一消息ID.
       LOG_BUSINESS_CONTEXT.executeInExecutorServiceV2(
           UUID.randomUUID().toString(), i, examplesWorker);

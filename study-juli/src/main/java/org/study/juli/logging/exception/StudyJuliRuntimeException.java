@@ -9,6 +9,8 @@ package org.study.juli.logging.exception;
  */
 public class StudyJuliRuntimeException extends RuntimeException {
 
+  private static final long serialVersionUID = -1L;
+
   /**
    * This is a method description.
    *
@@ -39,7 +41,7 @@ public class StudyJuliRuntimeException extends RuntimeException {
    * <p>Another description after blank line.
    *
    * @param message 消息.
-   * @param cause   异常.
+   * @param cause 异常.
    * @author admin
    */
   public StudyJuliRuntimeException(final String message, final Throwable cause) {
